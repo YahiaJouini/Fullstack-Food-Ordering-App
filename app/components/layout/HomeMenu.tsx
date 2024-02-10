@@ -1,9 +1,27 @@
+import Item from "../Menu/Item"
+import SectionHeaders from "./SectionHeaders"
+
 const HomeMenu = () => {
   return (
-    <div>
-        <h3>Check Our</h3>
-        <h2>Menu</h2>
-    </div>
+    <section className="">
+      <div className="text-center my-10">
+        <SectionHeaders subHeader="CHECK OUR"
+          mainHeader="MENU"
+        />
+      </div>
+      <div className="grid grid-cols-3 gap-6 mt-12">
+
+        <Item />
+        <Item />
+        <Item />
+        <Item />
+        <Item />
+        <Item />
+
+
+      </div>
+
+    </section>
   )
 }
 
