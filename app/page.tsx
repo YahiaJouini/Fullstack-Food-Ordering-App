@@ -7,10 +7,8 @@ import SectionHeaders from "./components/layout/SectionHeaders";
 export default function Home() {
   return (
     <>
-      <Header />
       <Hero />
       <HomeMenu />
-
       <section className="my-16 text-center">
 
         <SectionHeaders
@@ -44,13 +42,10 @@ export default function Home() {
             +46 731 648 810
           </a>
         </div>
-
       </section>
 
 
-      <footer className="border-t p-8 text-center mt-16 text-gray-500">
-        &copy; 2024 All rights reserved
-      </footer>
+
     </>
   );
 }
