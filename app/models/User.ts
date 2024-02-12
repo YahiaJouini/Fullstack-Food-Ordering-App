@@ -1,14 +1,15 @@
 import { Schema, model, models } from "mongoose";
-
+import bcrypt from 'bcrypt';
 const UserSchema = new Schema({
     email: {
         type: String,
-        required: [true, "The Email Is Required !"],
-        unique: true
+        required: [true, "The email is required"],
+        lowercase: true,
+        unique: true,
     },
     password: {
         type: String,
-        required: [true, "The Password Is Required !"],
+        required: [true, "The password is required"],
         validate: (pass: string) => {
             if (!pass?.length || pass.length < 5) {
                 throw new Error('password must be at least 5 characters long')
@@ -17,9 +18,9 @@ const UserSchema = new Schema({
     }
 }, { timestamps: true })
 
-
 UserSchema.pre('save', async function (next) {
-    this.password = "hashed password"
+    const salt = await bcrypt.genSalt(10)
+    this.password = await bcrypt.hash(this.password, salt)
     next()
 })
 

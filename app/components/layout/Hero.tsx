@@ -24,7 +24,7 @@ const Hero = () => {
             </div>
             <div className="relative">
 
-                <Image src="/pizza.png" fill objectFit="contain" alt="pizza" />
+                <Image src="/pizza.png" fill className="object-contain" alt="pizza" />
 
             </div>
         </section>
