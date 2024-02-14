@@ -1,9 +1,10 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import dbConnect from "@/app/libs/mongo.config"
+import GoogleProvider from "next-auth/providers/google"
+import dbConnect from "@/app/utils/mongo.config"
 import bcrypt from "bcrypt"
 import { User } from "@/app/models/User"
-import { NextResponse } from "next/server"
+import { Account, User as AuthUser } from "next-auth"
 
 const handler = NextAuth({
     secret: process.env.NEXTAUTH_SECRET,
@@ -32,8 +33,31 @@ const handler = NextAuth({
                 }
                 return null
             }
+        }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
         })
-    ]
-})
+    ], callbacks: {
+        async signIn({ user, account }: { user: AuthUser, account: Account }) {
+            if (account?.provider !== "google") {
+                return true
+            } else {
+                await dbConnect()
+                const exists = await User.findOne({ email: user.email }).lean().exec()
+                if (!exists) {
+                    try {
+                        await User.create({ email: user?.email })
+                        console.log("user created")
+                    } catch (err) {
+                        console.log(err)
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+    }
+} as any)
 
 export { handler as GET, handler as POST }

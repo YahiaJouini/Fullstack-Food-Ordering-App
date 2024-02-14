@@ -3,7 +3,7 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import Header from "./components/layout/Header";
 
-const roboto = Roboto({ subsets: ["latin"], weight: ['300', '400','500', '700', '900'] });
+const roboto = Roboto({ subsets: ["latin"], weight: ['300', '400', '500', '700', '900'] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <main className="max-w-5xl mx-auto p-4">
+        <main className="max-w-7xl mx-auto p-4">
           <Header />
           {children}
           <footer className="border-t p-8 text-center mt-16 text-gray-500">

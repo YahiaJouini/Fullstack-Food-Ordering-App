@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import dbConnect from "@/app/libs/mongo.config";
+import dbConnect from "@/app/utils/mongo.config";
 import { User } from "@/app/models/User";
 import HandleErrors from "@/app/utils/handeErrors";
 import bcrypt from "bcrypt"

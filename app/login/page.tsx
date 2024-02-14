@@ -35,22 +35,20 @@ const LoginPage = () => {
         else {
             setErrors({ global: "" })
             const res = await signIn('credentials', {
-                redirect: false,
                 email,
-                password
+                password,
+                callbackUrl: "/"
             })
             if (res?.error) {
                 setErrors({ global: "Invalid email or password" })
                 setLoading(false)
-            } else {
-                router.push('/')
-                setLoading(false)
             }
-
-
         }
+    }
 
-
+    const googleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        await signIn('google', { callbackUrl: "/" })
     }
     return (
         <section className="mt-14">
@@ -58,7 +56,6 @@ const LoginPage = () => {
             <h1 className="text-center text-primary font-bold text-4xl mb-4">
                 Login
             </h1>
-
             {
                 errors && (
                     <div className="my-4 text-center text-primary font-semibold text-xl">
@@ -91,7 +88,11 @@ const LoginPage = () => {
                     Login
                 </button>
                 <p className="my-4 text-center text-gray-500">or login with a provider</p>
-                <button className="flex items-center justify-center gap-x-4" disabled={loading}>
+                <button
+                    className="flex items-center justify-center gap-x-4"
+                    disabled={loading}
+                    onClick={googleSubmit}
+                >
                     <Image src="/google.png"
                         width={26}
                         height={26}
