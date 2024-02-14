@@ -6,7 +6,7 @@ import { useState } from "react"
 type errorsType = {
     email: string,
     password: string,
-    server: string
+    server: string,
 }
 const registerPage = () => {
 
