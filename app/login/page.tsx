@@ -13,7 +13,8 @@ type errorsType = {
 const LoginPage = () => {
     const [formData, setFormData] = useState({
         email: "",
-        password: ""
+        password: "",
+        fullname: ""
     })
 
     const [loading, setLoading] = useState(false)
@@ -37,7 +38,7 @@ const LoginPage = () => {
     const HandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setLoading(true)
-        const { email, password } = formData
+        const { email, password, fullname } = formData
         if (email === "" || password === "") {
             setErrors({ global: "All fields are required" })
             setLoading(false)
@@ -47,6 +48,7 @@ const LoginPage = () => {
             const res = await signIn('credentials', {
                 callbackUrl: "/",
                 redirect: false,
+                fullname,
                 email,
                 password,
             })

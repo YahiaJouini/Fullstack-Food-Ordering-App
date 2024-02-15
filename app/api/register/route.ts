@@ -7,7 +7,7 @@ import bcrypt from "bcrypt"
 
 export const POST = async (req: Request, res: Response) => {
     await dbConnect()
-    const { email, password }: { email: string, password: string } = await req.json()
+    const { email, password, fullname }: { email: string, password: string, fullname: string } = await req.json()
     const duplicate = await User.findOne({ email: email }).lean().exec()
     if (duplicate) {
         const err = {
@@ -20,7 +20,7 @@ export const POST = async (req: Request, res: Response) => {
             return NextResponse.json({ error: { password: "Invalid Password" } }, { status: 401 })
         }
         const hashedPassword = await bcrypt.hash(password, 10)
-        const user = await User.create({ email, password: hashedPassword })
+        const user = await User.create({ fullname: fullname, email, password: hashedPassword })
         return NextResponse.json({ userData: user }, { status: 200 })
     } catch (err: any) {
         if (err._message === "User validation failed") {

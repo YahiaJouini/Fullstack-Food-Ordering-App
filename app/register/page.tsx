@@ -15,7 +15,8 @@ const registerPage = () => {
 
     const [formData, setFormData] = useState({
         email: "",
-        password: ""
+        password: "",
+        fullname: ""
     })
     const { status } = useSession()
     const router = useRouter()
@@ -39,7 +40,7 @@ const registerPage = () => {
         const response = await fetch('/api/register',
             {
                 method: 'POST',
-                body: JSON.stringify({ email: formData.email, password: formData.password }),
+                body: JSON.stringify({ fullname: formData.fullname, email: formData.email, password: formData.password }),
                 headers: { 'Content-type': 'application/json' }
             }
         )
@@ -48,7 +49,8 @@ const registerPage = () => {
             setErrors(null)
             setFormData({
                 email: "",
-                password: ""
+                password: "",
+                fullname: ""
             })
         } else {
             const { error } = await response.json()
@@ -95,6 +97,13 @@ const registerPage = () => {
                     className="max-w-xs mx-auto"
                     onSubmit={HandleSubmit}
                 >
+                    <input
+                        type="text"
+                        placeholder="Full name (optional)"
+                        value={formData.fullname}
+                        onChange={HandleChange}
+                        disabled={loading}
+                        name="fullname" />
                     <input
                         type="email"
                         placeholder="email"

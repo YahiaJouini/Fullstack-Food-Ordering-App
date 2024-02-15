@@ -16,7 +16,7 @@ const handler = NextAuth({
                 email: { label: "Email", type: "email", placeholder: "test@example.com" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials: any, req) {
+            async authorize(credentials: any) {
                 await dbConnect()
                 try {
                     const { email, password } = credentials
@@ -47,7 +47,7 @@ const handler = NextAuth({
                 const exists = await User.findOne({ email: user.email }).lean().exec()
                 if (!exists) {
                     try {
-                        await User.create({ email: user?.email })
+                        await User.create({ fullname: user.name, email: user?.email })
                         console.log("user created")
                     } catch (err) {
                         console.log(err)
@@ -56,6 +56,17 @@ const handler = NextAuth({
                 }
                 return true
             }
+        },
+        async session({ session, token }: { session: any, token: any }) {
+            session.user.name = token.name
+            return session;
+        },
+        async jwt({ token, trigger, session }: { token: any, trigger: any, session: any }) {
+            if (trigger === "update" && session?.name) {
+                console.log(token)
+                token.name = session.name
+            }
+            return token
         }
     }
 } as any)
