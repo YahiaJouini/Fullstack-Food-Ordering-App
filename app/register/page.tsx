@@ -1,7 +1,10 @@
 "use client"
+import { signIn, useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import LoadinSpinner from "../components/layout/loadingText"
 
 type errorsType = {
     email: string,
@@ -14,7 +17,12 @@ const registerPage = () => {
         email: "",
         password: ""
     })
+    const { status } = useSession()
+    const router = useRouter()
 
+    useEffect(() => {
+        if (status === "authenticated") router.push('/')
+    }, [router, status])
     const [userCreated, setUserCreated] = useState(false)
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState<null | errorsType>(null)
@@ -55,69 +63,72 @@ const registerPage = () => {
         setLoading(false)
 
     }
+
+    const googleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        await signIn('google', { callbackUrl: "/" })
+    }
+
+    if (status === "loading" || status === "authenticated") {
+        return <LoadinSpinner />
+    }
     return (
         <section className="mt-14">
-
-            <h1 className="text-center text-primary font-bold text-4xl mb-4">
-                Register
-            </h1>
-
-            {
-                userCreated && (
+            <div>
+                <h1 className="text-center text-primary font-bold text-4xl mb-4">
+                    Register
+                </h1>
+                {userCreated && (
                     <div className="my-4 text-center">
                         User created.<br />
                         Now you can <Link className="underline text-blue-600 font-medium text-[1.1em]" href="/login">login</Link>
                     </div>
-                )
-            }
-
-            {
-                errors && (
+                )}
+                {errors && (
                     <div className="my-4 text-center text-primary font-semibold text-xl">
                         <p className="mb-2">{errors.email}</p>
                         <p className="mb-2">{errors.password}</p>
                         <p className="mb-2">{errors.server}</p>
                     </div>
-                )
-            }
-            <form
-                className="max-w-xs mx-auto"
-                onSubmit={HandleSubmit}
-
-            >
-                <input
-                    type="email"
-                    placeholder="email"
-                    value={formData.email}
-                    name="email"
-                    onChange={HandleChange}
-                    disabled={loading}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    name="password"
-                    onChange={HandleChange}
-                    disabled={loading}
-
-                />
-                <button type="submit" disabled={loading}>
-                    Register
-                </button>
-                <p className="my-4 text-center text-gray-500">or login with a provider</p>
-                <button className="flex items-center justify-center gap-x-4" disabled={loading}>
-                    <Image src="/google.png"
-                        width={26}
-                        height={26}
-                        alt="Google icon" />
-                    Login with google
-                </button>
-                <div className="text-center pt-4">
-                    Already have an account? <Link className="underline text-blue-600 font-medium text-[1.1em]" href="/login">Login</Link>
-                </div>
-            </form>
-
+                )}
+                <form
+                    className="max-w-xs mx-auto"
+                    onSubmit={HandleSubmit}
+                >
+                    <input
+                        type="email"
+                        placeholder="email"
+                        value={formData.email}
+                        name="email"
+                        onChange={HandleChange}
+                        disabled={loading}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        onChange={HandleChange}
+                        disabled={loading}
+                    />
+                    <button type="submit" disabled={loading}>
+                        Register
+                    </button>
+                    <p className="my-4 text-center text-gray-500">or login with a provider</p>
+                    <button
+                        className="flex items-center justify-center gap-x-4"
+                        disabled={loading}
+                        onClick={googleSubmit}
+                    >
+                        <Image src="/google.png" width={26} height={26} alt="Google icon" />
+                        Login with Google
+                    </button>
+                    <div className="text-center pt-4">
+                        Already have an account? <Link className="underline text-blue-600 font-medium text-[1.1em]" href="/login">Login</Link>
+                    </div>
+                </form>
+            </div>
         </section>
+
     )
 }
 

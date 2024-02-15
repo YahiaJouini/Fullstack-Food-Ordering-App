@@ -1,5 +1,22 @@
 import Link from "next/link";
-const Header = () => {
+import { getServerSession } from "next-auth";
+import Logout from "./Logout";
+const Header = async () => {
+    const session = await getServerSession()
+    const handleNavDisplay = () => {
+        if (session) {
+            return (
+                <Logout />
+            )
+        }
+
+        return (
+            <>
+                <Link href={"/login"}>Login</Link>
+                <Link href={"/register"} className="bg-primary text-white px-8 rounded-full py-2">Register</Link>
+            </>
+        )
+    }
     return (
         <header className="flex  items-center justify-between">
             <nav className="flex gap-x-8 text-gray-500 font-bold items-center">
@@ -11,10 +28,7 @@ const Header = () => {
             </nav>
 
             <nav className="flex gap-x-4 text-gray-500 font-bold items-center">
-                <Link href={"/login"}>Login</Link>
-
-                <Link href={"/register"} className="bg-primary text-white px-8 rounded-full py-2">Register</Link>
-
+                {handleNavDisplay()}
             </nav>
         </header>
     )
