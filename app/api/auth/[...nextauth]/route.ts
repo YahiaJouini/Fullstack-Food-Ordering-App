@@ -62,8 +62,18 @@ const handler = NextAuth({
             return session;
         },
         async jwt({ token, trigger, session }: { token: any, trigger: any, session: any }) {
+            if (trigger === "signIn" && !token.name) {
+                await dbConnect()
+                try {
+                    const user: any = await User.findOne({ email: token.email }).lean().exec()
+                    if (user.fullname) {
+                        token.name = user.fullname
+                    }
+                } catch (err) {
+                    console.log(err)
+                }
+            }
             if (trigger === "update" && session?.name) {
-                console.log(token)
                 token.name = session.name
             }
             return token

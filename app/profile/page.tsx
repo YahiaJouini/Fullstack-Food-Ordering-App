@@ -12,7 +12,7 @@ const profilePage = async () => {
             <h1 className="text-center text-primary font-bold text-4xl mb-4">
                 Profile
             </h1>
-            <ProfileForm user={session.user} />
+            <ProfileForm/>
         </section>
     )
 }
