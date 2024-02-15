@@ -1,26 +1,36 @@
+"use client"
 import Link from "next/link";
-import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 import Logout from "./Logout";
-const Header = async () => {
-    const session = await getServerSession()
+const Header = () => {
+    const session = useSession()
     const handleNavDisplay = () => {
-        if (session) {
-            return (
+        if (session.status === "loading") {
+            return <Logout loading={true} />
+        }
+        else if (session.status === "authenticated") {
+            const { user } = session.data
+            const userName = user?.name || user?.email
+            return (<div className="flex items-center gap-x-6">
+                <Link href="/profile">{userName}</Link>
                 <Logout />
+            </div>)
+
+        } else {
+            return (
+                <>
+                    <Link href={"/login"}>Login</Link>
+                    <Link href={"/register"} className="bg-primary border-none text-white px-8 rounded-full py-2">
+                        Register
+                    </Link>
+                </>
             )
         }
-
-        return (
-            <>
-                <Link href={"/login"}>Login</Link>
-                <Link href={"/register"} className="bg-primary text-white px-8 rounded-full py-2">Register</Link>
-            </>
-        )
     }
     return (
         <header className="flex  items-center justify-between">
             <nav className="flex gap-x-8 text-gray-500 font-bold items-center">
-                <Link className="font-bold text-2xl text-primary" href="">ST PIZZA</Link>
+                <Link className="font-bold text-2xl text-primary mr-10" href="/">ST PIZZA</Link>
                 <Link href={"/"}>Home</Link>
                 <Link href={""}>Menu</Link>
                 <Link href={""}>About</Link>

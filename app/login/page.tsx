@@ -22,7 +22,10 @@ const LoginPage = () => {
     const router = useRouter()
 
     useEffect(() => {
-        if (status === "authenticated") router.push('/')
+        if (status === "authenticated") {
+            router.refresh()
+            router.push("/")
+        }
     }, [router, status])
 
     const HandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,14 +45,11 @@ const LoginPage = () => {
         else {
             setErrors({ global: "" })
             const res = await signIn('credentials', {
+                callbackUrl: "/",
                 redirect: false,
                 email,
                 password,
             })
-            if (res?.ok) {
-                router.refresh()
-                router.push('/')
-            }
             if (res?.error) {
                 setErrors({ global: "Invalid email or password" })
                 setLoading(false)

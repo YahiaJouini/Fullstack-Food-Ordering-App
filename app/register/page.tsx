@@ -108,6 +108,7 @@ const registerPage = () => {
                         placeholder="Password"
                         name="password"
                         onChange={HandleChange}
+                        value={formData.password}
                         disabled={loading}
                     />
                     <button type="submit" disabled={loading}>

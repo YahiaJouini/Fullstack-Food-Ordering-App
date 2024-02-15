@@ -14,7 +14,7 @@ const Hero = () => {
                 </p>
 
                 <div className="flex items-center gap-x-4 text-sm">
-                    <button className="text-white px-4 py-2 flex items-center justify-center gap-x-2 rounded-full bg-primary">
+                    <button className="text-white px-4 py-2  border-none flex items-center justify-center gap-x-2 rounded-full bg-primary">
                         ORDER NOW  <Right className="w-6 h-6" />
                     </button>
                     <button className="flex justify-center items-center gap-x-1  font-bold">Learn More

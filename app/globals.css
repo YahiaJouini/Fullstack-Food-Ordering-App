@@ -25,9 +25,10 @@ button[type="submit"], .submit {
 }
 
 button {
-    @apply w-full text-gray-700 font-bold border rounded-xl border-gray-500 px-6 py-2
+    @apply w-full text-gray-700 font-bold border rounded-xl border-gray-500 px-6 py-2 shadow-lg
 }
 
-button[type="submit"]:disabled, .submit:disabled {
+button[type="submit"]:disabled,
+.submit:disabled {
     @apply cursor-not-allowed bg-red-400
 }
