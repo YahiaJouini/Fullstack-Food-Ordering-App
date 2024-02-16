@@ -24,14 +24,14 @@ export const POST = async (req: Request, res: Response) => {
         const location = {
             phone: "",
             city: "",
-            street: "",
+            adress: "",
             postal: ""
         }
 
         const user = await User.create({ fullname: fullname, email, password: hashedPassword, location: location })
 
         return NextResponse.json({ userData: user }, { status: 200 })
-        
+
     } catch (err: any) {
         if (err._message === "User validation failed") {
             const errors = HandleErrors(err)

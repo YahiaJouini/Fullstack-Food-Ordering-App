@@ -29,7 +29,7 @@ const ProfileForm = () => {
 
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
-    const [error, setError] = useState(false)
+    const [error, setError] = useState("")
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name
@@ -42,11 +42,29 @@ const ProfileForm = () => {
 
     const handleProfileUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (formData.username === userSession?.name || formData.username.length <= 2) return
+        const formDataLocation = {
+            phone: formData.phone,
+            city: formData.city,
+            adress: formData.adress,
+            postal: formData.postal
+
+        }
+        if (
+            (formData.username === userSession?.name || formData.username.length <= 2)
+            && (JSON.stringify(formDataLocation) === JSON.stringify(userSession?.location))
+        ) {
+            setError("No changes have been made");
+            setTimeout(() => {
+                setError("");
+            }, 3000);
+            return
+        }
+
+
 
         setSaving(true)
         setSaved(false)
-        setError(false)
+        setError("")
 
         const res = await fetch('/api/profile', {
             method: "PUT",
@@ -63,7 +81,7 @@ const ProfileForm = () => {
                 setSaved(false)
             }, 3000)
         } else {
-            setError(true)
+            setError("An error occured !")
         }
         setSaving(false)
     }
@@ -79,6 +97,7 @@ const ProfileForm = () => {
                 postal: location?.postal ?? "",
                 city: location?.city ?? ""
             })
+            console.log(session)
         }
     }, [session, session.status])
 
@@ -103,7 +122,7 @@ const ProfileForm = () => {
             {
                 error && (
                     <h2 className="text-center bg-red-100 p-4 rounded-lg border border-red-300 my-6 font-medium">
-                        An error occured !
+                        {error}
                     </h2>
                 )
             }
@@ -153,6 +172,7 @@ const ProfileForm = () => {
                     <input type="tel"
                         placeholder="Phone number"
                         name="phone"
+                        value={formData.phone}
                         onChange={handleChange}
 
                     />
@@ -160,17 +180,20 @@ const ProfileForm = () => {
                         placeholder="City"
                         name="city"
                         onChange={handleChange}
+                        value={formData.city}
 
                     />
                     <div className="flex items-center gap-4">
                         <input type="text"
                             placeholder="Street adress"
-                            name="street"
+                            name="adress"
+                            value={formData.adress}
                             onChange={handleChange}
                         />
                         <input type="text"
                             placeholder="Postal code"
                             name="postal"
+                            value={formData.postal}
                             onChange={handleChange} />
                     </div>
 

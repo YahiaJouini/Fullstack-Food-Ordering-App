@@ -11,7 +11,7 @@ export async function PUT(req: Request) {
         const location = {
             phone: formData.phone,
             city: formData.city,
-            street: formData.street,
+            adress: formData.adress,
             postal: formData.postal
         }
         try {

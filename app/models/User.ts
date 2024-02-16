@@ -19,7 +19,7 @@ const UserSchema = new Schema({
     }, location: {
         phone: String,
         city: String,
-        street: String,
+        adress: String,
         postal: String
     }
 

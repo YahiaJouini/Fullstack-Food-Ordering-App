@@ -51,7 +51,7 @@ const handler = NextAuth({
                         const location = {
                             phone: "",
                             city: "",
-                            street: "",
+                            adress: "",
                             postal: ""
                         }
 
@@ -67,22 +67,29 @@ const handler = NextAuth({
             }
         },
         async session({ session, token }: { session: any, token: any }) {
-            session.user.name = token.name
             await dbConnect()
-            try {
-                const foundUser: any = await User.findOne({ email: token.email }).lean().exec()
+            const foundUser: any = await User.findOne({ email: token.email }).lean().exec()
+            if (foundUser) {
                 session.user.location = foundUser.location
-            } catch (err) {
-                console.log('error when creating a session')
-                console.log(err)
+                session.user.name = foundUser.fullname
             }
-            return session;
+            else {
+                console.log("An error occured when creating a session")
+            }
+            return session
         },
         async jwt({ token, trigger, session }: { token: any, trigger: any, session: any }) {
-            console.log(trigger)
-            if (trigger === "update") {
-                console.log(session)
+            if (trigger === "update" && session.formData) {
+                token.name = session.formData.username
+                const location = {
+                    phone: session.formData.phone,
+                    city: session.formData.city,
+                    adress: session.formData.adress,
+                    postal: session.formData.postal
+                }
+                token.location = location
             }
+
             return token
         }
     }
