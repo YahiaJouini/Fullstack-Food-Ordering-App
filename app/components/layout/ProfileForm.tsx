@@ -3,17 +3,33 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 
+type userSession = {
+    name?: string | null | undefined;
+    email?: string | null | undefined;
+    image?: string | null | undefined;
+    location?: {
+        phone: string,
+        city: string,
+        adress: string,
+        postal: string
+    } | null | undefined;
+
+}
 const ProfileForm = () => {
 
     const session = useSession()
-    const userSession = session.data?.user
+    const userSession: userSession | null | undefined = session.data?.user
     const [formData, setFormData] = useState({
-        username: userSession?.name || "",
+        username: "",
+        phone: "",
+        adress: "",
+        city: "",
+        postal: ""
     })
+
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
     const [error, setError] = useState(false)
-    const [fileError, setFileError] = useState("")
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name
@@ -22,15 +38,16 @@ const ProfileForm = () => {
         setFormData(prev => ({ ...prev, [name]: value }))
     }
 
-
     //saving data changes
 
     const handleProfileUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
         if (formData.username === userSession?.name || formData.username.length <= 2) return
+
         setSaving(true)
         setSaved(false)
         setError(false)
+
         const res = await fetch('/api/profile', {
             method: "PUT",
             headers: {
@@ -38,8 +55,9 @@ const ProfileForm = () => {
             },
             body: JSON.stringify({ formData })
         })
+
         if (res.ok) {
-            session.update({ name: formData.username })
+            session.update({ formData: formData })
             setSaved(true)
             setTimeout(() => {
                 setSaved(false)
@@ -48,87 +66,30 @@ const ProfileForm = () => {
             setError(true)
         }
         setSaving(false)
-
     }
 
-    //converting image to a binary-to-text encoding scheme 
-    const imageToBase64 = (file: any) => {
-        const reader = new window.FileReader()
-        reader.readAsDataURL(file)
-        const data = new Promise((resolve, reject) => {
-            reader.onload = () => resolve(reader.result)
-            reader.onerror = (err) => reject(err)
-        })
-        return data
-    }
-
-
-    //checking if image size is less than 0.5MB
-    const checkImageSize = (bytes: number) => {
-        return (bytes / 1024) <= 500
-    }
-
-    //uploading the image to the database
-    const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault()
-        const files = e.target.files
-        if (files && files.length === 1) {
-
-            // if file size is acceptable we save it to the database
-            if (checkImageSize(files[0].size)) {
-                const data = await imageToBase64(files[0])
-                if (data) {
-                    setSaving(true)
-                    const res = await fetch('/api/upload', {
-                        method: "POST",
-                        body: JSON.stringify(data),
-                        headers: {
-                            "content-type": "application/json"
-                        }
-                    })
-                    setSaving(false)
-                    if (res.ok) {
-                        setSaved(true)
-                        setTimeout(() => {
-                            setSaved(false)
-                        }, 3000)
-                    }
-                } else {
-                    setError(true)
-                }
-
-
-            } else {
-                setFileError("File provided is larger than 0.5MB")
-                setTimeout(() => {
-                    setFileError("")
-                }, 2000)
-            }
-
-        } else {
-            setFileError("Please select one file")
-            setTimeout(() => {
-                setFileError("")
-            }, 2000)
-        }
-    }
 
     useEffect(() => {
         if (session.status === "authenticated") {
-            setFormData({ username: userSession?.name ?? "" })
+            const location = userSession?.location
+            setFormData({
+                username: userSession?.name ?? "",
+                phone: location?.phone ?? "",
+                adress: location?.adress ?? "",
+                postal: location?.postal ?? "",
+                city: location?.city ?? ""
+            })
         }
-
     }, [session, session.status])
 
     return (
-        <div className="max-w-md mx-auto">
+        <div className="max-w-[500px] mx-auto">
             {
                 saved && (
                     <h2 className="text-center bg-green-100 p-4 rounded-lg border border-green-300 my-6 font-medium">
                         Changes saved
                     </h2>
                 )
-
             }
 
             {
@@ -146,7 +107,7 @@ const ProfileForm = () => {
                     </h2>
                 )
             }
-            <div className="flex items-center gap-4">
+            <div className="flex items-start gap-10">
                 <div>
                     <div className="rounded-lg flex flex-col items-center gap-y-2 justify-center">
 
@@ -158,38 +119,18 @@ const ProfileForm = () => {
                                         fill
                                         alt="User Image"
                                         quality={100}
-                                        className="rounded-lg object-contain"
+                                        className="rounded-lg object-cover"
                                     />
                                 ) :
                                     (
-                                        <div className="bg-gray-200 w-full h-full rounded-lg grid place-content-center">
-                                            <h1 className="text-6xl font-extrabold">{userSession?.name && userSession.name[0]}</h1>
+                                        <div
+                                            className="bg-gray-200 w-full h-full rounded-lg 
+                                        grid place-content-center text-6xl font-extrabold">
+                                            {userSession?.name && userSession.name[0].toUpperCase()}
                                         </div>
                                     )
                             }
                         </div>
-                        <label>
-                            <input
-                                type="file"
-                                className="hidden"
-                                onChange={handleFile}
-                                accept=".jpg, .jpeg, .png"
-                            />
-                            <span
-                                className="block border border-gray-600 rounded-lg p-2 text-center cursor-pointer
-                                text-sm font-bold w-[120px] hover:bg-black hover:text-white transition-all duration-300"
-                            >
-                                Edit
-                            </span>
-                            {
-                                fileError !== "" && (
-                                    <div className="text-center text-red-500 font-medium break-words w-[120px] mt-2">
-                                        {fileError}
-                                    </div>
-                                )
-                            }
-
-                        </label>
                     </div>
                 </div>
                 <form
@@ -206,8 +147,33 @@ const ProfileForm = () => {
                         value={userSession?.email ?? ""}
                         disabled
                         name="email"
+                        placeholder="Your email"
 
                     />
+                    <input type="tel"
+                        placeholder="Phone number"
+                        name="phone"
+                        onChange={handleChange}
+
+                    />
+                    <input type="text"
+                        placeholder="City"
+                        name="city"
+                        onChange={handleChange}
+
+                    />
+                    <div className="flex items-center gap-4">
+                        <input type="text"
+                            placeholder="Street adress"
+                            name="street"
+                            onChange={handleChange}
+                        />
+                        <input type="text"
+                            placeholder="Postal code"
+                            name="postal"
+                            onChange={handleChange} />
+                    </div>
+
                     <button type="submit">Save</button>
                 </form>
 

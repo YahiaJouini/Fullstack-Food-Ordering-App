@@ -16,7 +16,13 @@ const UserSchema = new Schema({
                 throw new Error('password must be at least 5 characters long')
             }
         }
+    }, location: {
+        phone: String,
+        city: String,
+        street: String,
+        postal: String
     }
+
 }, { timestamps: true })
 
 export const User = models?.User || model('User', UserSchema)

@@ -47,8 +47,17 @@ const handler = NextAuth({
                 const exists = await User.findOne({ email: user.email }).lean().exec()
                 if (!exists) {
                     try {
-                        await User.create({ fullname: user.name, email: user?.email })
+
+                        const location = {
+                            phone: "",
+                            city: "",
+                            street: "",
+                            postal: ""
+                        }
+
+                        await User.create({ fullname: user.name, email: user?.email, location: location })
                         console.log("user created")
+
                     } catch (err) {
                         console.log(err)
                         return false
@@ -59,22 +68,20 @@ const handler = NextAuth({
         },
         async session({ session, token }: { session: any, token: any }) {
             session.user.name = token.name
+            await dbConnect()
+            try {
+                const foundUser: any = await User.findOne({ email: token.email }).lean().exec()
+                session.user.location = foundUser.location
+            } catch (err) {
+                console.log('error when creating a session')
+                console.log(err)
+            }
             return session;
         },
         async jwt({ token, trigger, session }: { token: any, trigger: any, session: any }) {
-            if (trigger === "signIn" && !token.name) {
-                await dbConnect()
-                try {
-                    const user: any = await User.findOne({ email: token.email }).lean().exec()
-                    if (user.fullname) {
-                        token.name = user.fullname
-                    }
-                } catch (err) {
-                    console.log(err)
-                }
-            }
-            if (trigger === "update" && session?.name) {
-                token.name = session.name
+            console.log(trigger)
+            if (trigger === "update") {
+                console.log(session)
             }
             return token
         }

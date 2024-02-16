@@ -20,8 +20,18 @@ export const POST = async (req: Request, res: Response) => {
             return NextResponse.json({ error: { password: "Invalid Password" } }, { status: 401 })
         }
         const hashedPassword = await bcrypt.hash(password, 10)
-        const user = await User.create({ fullname: fullname, email, password: hashedPassword })
+
+        const location = {
+            phone: "",
+            city: "",
+            street: "",
+            postal: ""
+        }
+
+        const user = await User.create({ fullname: fullname, email, password: hashedPassword, location: location })
+
         return NextResponse.json({ userData: user }, { status: 200 })
+        
     } catch (err: any) {
         if (err._message === "User validation failed") {
             const errors = HandleErrors(err)

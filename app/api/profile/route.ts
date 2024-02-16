@@ -7,9 +7,15 @@ export async function PUT(req: Request) {
     await dbConnect()
     const { formData } = await req.json()
     const session = await getServerSession()
-    if (formData.username) {
+    if (formData) {
+        const location = {
+            phone: formData.phone,
+            city: formData.city,
+            street: formData.street,
+            postal: formData.postal
+        }
         try {
-            await User.findOneAndUpdate({ email: session?.user?.email }, { fullname: formData.username })
+            await User.findOneAndUpdate({ email: session?.user?.email }, { fullname: formData.username, location: location })
         } catch (err) {
             console.log(err)
         }
