@@ -70,27 +70,12 @@ const handler = NextAuth({
             await dbConnect()
             const foundUser: any = await User.findOne({ email: token.email }).lean().exec()
             if (foundUser) {
-                session.user.location = foundUser.location
                 session.user.name = foundUser.fullname
             }
             else {
                 console.log("An error occured when creating a session")
             }
             return session
-        },
-        async jwt({ token, trigger, session }: { token: any, trigger: any, session: any }) {
-            if (trigger === "update" && session.formData) {
-                token.name = session.formData.username
-                const location = {
-                    phone: session.formData.phone,
-                    city: session.formData.city,
-                    adress: session.formData.adress,
-                    postal: session.formData.postal
-                }
-                token.location = location
-            }
-
-            return token
         }
     }
 } as any)

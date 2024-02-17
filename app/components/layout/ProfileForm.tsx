@@ -15,6 +15,13 @@ type userSession = {
     } | null | undefined;
 
 }
+
+type locationType = {
+    phone: string,
+    city: string,
+    adress: string,
+    postal: string
+}
 const ProfileForm = () => {
 
     const session = useSession()
@@ -26,6 +33,7 @@ const ProfileForm = () => {
         city: "",
         postal: ""
     })
+    const [location, setLocation] = useState<locationType | null>(null)
 
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
@@ -51,7 +59,7 @@ const ProfileForm = () => {
         }
         if (
             (formData.username === userSession?.name || formData.username.length <= 2)
-            && (JSON.stringify(formDataLocation) === JSON.stringify(userSession?.location))
+            && (JSON.stringify(formDataLocation) === JSON.stringify(location))
         ) {
             setError("No changes have been made");
             setTimeout(() => {
@@ -59,13 +67,9 @@ const ProfileForm = () => {
             }, 3000);
             return
         }
-
-
-
         setSaving(true)
         setSaved(false)
         setError("")
-
         const res = await fetch('/api/profile', {
             method: "PUT",
             headers: {
@@ -75,8 +79,9 @@ const ProfileForm = () => {
         })
 
         if (res.ok) {
-            session.update({ formData: formData })
+            session.update()
             setSaved(true)
+            setLocation(null) // to provoke fetching the new data in the useEffect
             setTimeout(() => {
                 setSaved(false)
             }, 3000)
@@ -88,8 +93,22 @@ const ProfileForm = () => {
 
 
     useEffect(() => {
+
+        const getLocation = async () => {
+            const data = await fetch('/api/profile', {
+                method: "GET",
+                headers: {
+                    "content-type": "application/json"
+                }
+            })
+            const location = await data.json()
+            setLocation({ ...location.location })
+        }
+
         if (session.status === "authenticated") {
-            const location = userSession?.location
+            if (!location) {
+                getLocation()
+            }
             setFormData({
                 username: userSession?.name ?? "",
                 phone: location?.phone ?? "",
@@ -97,9 +116,8 @@ const ProfileForm = () => {
                 postal: location?.postal ?? "",
                 city: location?.city ?? ""
             })
-            console.log(session)
         }
-    }, [session, session.status])
+    }, [session, session.status, location])
 
     return (
         <div className="max-w-[500px] mx-auto">

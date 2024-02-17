@@ -9,6 +9,7 @@ const Header = () => {
             return <Logout loading={true} />
         }
         else if (session.status === "authenticated") {
+            console.log(session)
             const { user } = session.data
             const userName = user?.name || user?.email
             return (<div className="flex items-center gap-x-6">

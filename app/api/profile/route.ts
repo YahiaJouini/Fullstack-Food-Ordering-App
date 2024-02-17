@@ -22,3 +22,13 @@ export async function PUT(req: Request) {
     }
     return NextResponse.json({ message: "success" }, { status: 200 })
 }
+
+
+export const GET = async () => {
+    const session = await getServerSession()
+    const user = await User.findOne({ email: session?.user?.email })
+    if (!user) {
+        return NextResponse.json({ error: "user not found" }, { status: 404 })
+    }
+    return NextResponse.json({ location: user.location }, { status: 200 })
+}
