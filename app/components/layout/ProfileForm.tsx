@@ -1,7 +1,10 @@
 "use client"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useState } from "react"
+import Tabs from "./Tabs"
+import Loading from "./Loading"
 
 type userSession = {
     name?: string | null | undefined;
@@ -16,11 +19,15 @@ type userSession = {
 
 }
 
-type locationType = {
-    phone: string,
-    city: string,
-    adress: string,
-    postal: string
+type fetchedInfo = {
+    location: {
+        phone: string,
+        city: string,
+        adress: string,
+        postal: string
+    },
+    isAdmin: boolean
+
 }
 const ProfileForm = () => {
 
@@ -33,7 +40,7 @@ const ProfileForm = () => {
         city: "",
         postal: ""
     })
-    const [location, setLocation] = useState<locationType | null>(null)
+    const [fetchedInfo, setFetchedInfo] = useState<fetchedInfo | null>(null)
 
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
@@ -81,7 +88,7 @@ const ProfileForm = () => {
         if (res.ok) {
             session.update()
             setSaved(true)
-            setLocation(null) // to provoke fetching the new data in the useEffect
+            setFetchedInfo(null) // to provoke fetching the new data in the useEffect
             setTimeout(() => {
                 setSaved(false)
             }, 3000)
@@ -101,26 +108,46 @@ const ProfileForm = () => {
                     "content-type": "application/json"
                 }
             })
-            const location = await data.json()
-            setLocation({ ...location.location })
+
+
+            const placeholder = {
+                location: {
+                    phone: "",
+                    city: "",
+                    adress: "",
+                    postal: ""
+                },
+                isAdmin: false
+            }
+
+            if (data.ok) {
+                const info = await data.json()
+                setFetchedInfo({ location: { ...info.user.location }, isAdmin: info.user.admin })
+            } else {
+                setFetchedInfo({ location: { ...placeholder.location }, isAdmin: placeholder.isAdmin })
+            }
         }
 
         if (session.status === "authenticated") {
-            if (!location) {
+            if (!fetchedInfo) {
                 getLocation()
             }
             setFormData({
                 username: userSession?.name ?? "",
-                phone: location?.phone ?? "",
-                adress: location?.adress ?? "",
-                postal: location?.postal ?? "",
-                city: location?.city ?? ""
+                phone: fetchedInfo?.location.phone ?? "",
+                adress: fetchedInfo?.location.adress ?? "",
+                postal: fetchedInfo?.location.postal ?? "",
+                city: fetchedInfo?.location.city ?? ""
             })
         }
-    }, [session, session.status, location])
+    }, [session, session.status, fetchedInfo])
+
+
+    if (session.status == "loading" || !fetchedInfo) return <Loading />
 
     return (
         <div className="max-w-[500px] mx-auto">
+            <Tabs isAdmin={fetchedInfo?.isAdmin} />
             {
                 saved && (
                     <h2 className="text-center bg-green-100 p-4 rounded-lg border border-green-300 my-6 font-medium">

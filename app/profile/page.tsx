@@ -8,10 +8,7 @@ const profilePage = async () => {
         redirect('/login')
     }
     return (
-        <section className='mt-12'>
-            <h1 className="text-center text-primary font-bold text-4xl mb-4">
-                Profile
-            </h1>
+        <section className='mt-20'>
             <ProfileForm />
         </section>
     )

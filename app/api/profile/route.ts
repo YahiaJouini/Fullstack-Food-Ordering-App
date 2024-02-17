@@ -30,5 +30,5 @@ export const GET = async () => {
     if (!user) {
         return NextResponse.json({ error: "user not found" }, { status: 404 })
     }
-    return NextResponse.json({ location: user.location }, { status: 200 })
+    return NextResponse.json({ user: user }, { status: 200 })
 }
