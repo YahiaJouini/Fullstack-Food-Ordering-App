@@ -5,7 +5,7 @@ type profileType = {
 }
 const useProfile = () => {
 
-    
+
     const [loading, setLoading] = useState(true)
     const [profile, setProfile] = useState<profileType>({
         email: "",
