@@ -5,9 +5,19 @@ import Tabs from "@/app/components/layout/Tabs"
 import useProfile from "@/hooks/useProfile"
 import { redirect } from "next/navigation"
 import Image from "next/image"
-import { useState } from "react"
+import { useRef, useState } from "react"
+import PopupDialog from "@/app/components/layout/PopupDialog"
+import PopupContent from "@/app/components/layout/PopupContent"
 
 const NewMenupage = () => {
+
+    const popupRef = useRef<HTMLDialogElement>(null)
+
+    const togglePopup = () => {
+        if (!popupRef.current) return
+        popupRef.current.hasAttribute('open') ?
+            popupRef.current.close() : popupRef.current.showModal()
+    }
 
 
     const { loading, profile } = useProfile()
@@ -21,8 +31,35 @@ const NewMenupage = () => {
     const [error, setError] = useState("")
 
 
-    const handleMenuSubmit = (e: React.FormEvent) => {
+    const handleMenuSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        const emptyField = Object.values(formData).some(value => value === "")
+        if (emptyField) return
+        setSaveStatus("saving")
+        const res = await fetch('/api/menu-item', {
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.ok) {
+            setSaveStatus("saved")
+            setFormData({
+                imagePath: "",
+                name: "",
+                description: "",
+                price: ""
+            })
+            setTimeout(() => {
+                setSaveStatus(null)
+            }, 2000)
+        } else {
+            setError('An error occured')
+        }
+
+        if (saveStatus !== null) setSaveStatus(null)
+
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,13 +102,15 @@ const NewMenupage = () => {
                 <div>
                     <div className="rounded-lg flex flex-col items-center gap-y-2 justify-center">
 
-                        <div className="relative w-[140px] h-[110px] rounded-lg">
+                        <div className="relative w-[150px] h-[120px] rounded-lg">
                             {
                                 formData.imagePath ? (
                                     <Image
                                         src={formData.imagePath ?? ''}
                                         fill
-                                        alt='Item Image' />
+                                        alt='Item Image'
+                                        className="rounded-xl"
+                                    />
                                 ) :
                                     (
                                         <div
@@ -81,11 +120,13 @@ const NewMenupage = () => {
                                         </div>
                                     )
                             }
-                            <button
-                                className="border border-gray-300 text-gray-500 font-medium mt-3">
-                                Edit
-                            </button>
                         </div>
+                        <button
+                            className="border border-gray-300 text-gray-500 font-medium mt-3"
+                            onClick={togglePopup}
+                        >
+                            Edit
+                        </button>
                     </div>
                 </div>
                 <form
@@ -116,6 +157,14 @@ const NewMenupage = () => {
                 </form>
 
             </div>
+            <PopupDialog
+                togglePopup={togglePopup}
+                ref={popupRef}
+                setFormData={setFormData}
+                formData={formData}
+            >
+                <PopupContent formData={formData} setFormData={setFormData} />
+            </PopupDialog>
         </div>
     )
 }

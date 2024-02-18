@@ -9,10 +9,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary : "#f13a01"
+        primary: "#f13a01"
       }
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }: { addUtilities: any }) {
+      const newUtility = {
+        ".scrollbar-thin": {
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgb(31, 29, 29) transparent",
+        }
+      }
+
+
+      addUtilities(newUtility, ["responsive", "hover"])
+
+    }
+  ],
 };
 export default config;
