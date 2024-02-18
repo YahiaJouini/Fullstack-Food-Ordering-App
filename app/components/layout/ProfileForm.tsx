@@ -41,9 +41,7 @@ const ProfileForm = () => {
         postal: ""
     })
     const [fetchedInfo, setFetchedInfo] = useState<fetchedInfo | null>(null)
-
-    const [saving, setSaving] = useState(false)
-    const [saved, setSaved] = useState(false)
+    const [saveStatus, setSaveStatus] = useState<null | "saving" | "saved">(null)
     const [error, setError] = useState("")
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,8 +72,7 @@ const ProfileForm = () => {
             }, 3000);
             return
         }
-        setSaving(true)
-        setSaved(false)
+        setSaveStatus('saving')
         setError("")
         const res = await fetch('/api/profile', {
             method: "PUT",
@@ -87,15 +84,16 @@ const ProfileForm = () => {
 
         if (res.ok) {
             session.update()
-            setSaved(true)
+            setSaveStatus("saved")
             setFetchedInfo(null) // to provoke fetching the new data in the useEffect
             setTimeout(() => {
-                setSaved(false)
+                setSaveStatus(null)
             }, 3000)
         } else {
             setError("An error occured !")
         }
-        setSaving(false)
+        if (saveStatus !== null) setSaveStatus(null)
+
     }
 
 
@@ -149,7 +147,7 @@ const ProfileForm = () => {
         <div className="max-w-[500px] mx-auto">
             <Tabs isAdmin={fetchedInfo?.isAdmin} />
             {
-                saved && (
+                saveStatus === "saved" && (
                     <h2 className="text-center bg-green-100 p-4 rounded-lg border border-green-300 my-6 font-medium">
                         Changes saved
                     </h2>
@@ -157,7 +155,7 @@ const ProfileForm = () => {
             }
 
             {
-                saving && (
+                saveStatus === "saving" && (
                     <h2 className="text-center bg-blue-100 p-4 rounded-lg border border-blue-300 my-6 font-medium">
                         Saving ...
                     </h2>

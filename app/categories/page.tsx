@@ -74,7 +74,7 @@ const CategoryPage = () => {
     }
     return (
         <section className='mt-20 max-w-[500px] mx-auto'>
-            <Tabs isAdmin={profile.admin} />
+            <Tabs isAdmin={true} />
             {
                 created && (
                     <h2 className="text-center bg-green-100 p-4 rounded-lg border border-green-300 -mb-6 font-medium">
@@ -107,11 +107,12 @@ const CategoryPage = () => {
                         {
                             editing && (
 
-                                <button type='button' onClick={() => {
-                                    setEditing(null)
-                                    setNewCategory('')
-                                }
-                                }>
+                                <button type='button'
+                                    onClick={() => {
+                                        setEditing(null)
+                                        setNewCategory('')
+                                    }
+                                    }>
                                     cancel
                                 </button>
 
