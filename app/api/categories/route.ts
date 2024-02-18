@@ -16,3 +16,13 @@ export const GET = async () => {
     }
     return NextResponse.json({ categories: categories }, { status: 200 })
 }
+
+export const PUT = async (req: Request) => {
+    const { _id, newCategory } = await req.json()
+    try {
+        await Category.findByIdAndUpdate({ _id: _id }, { name: newCategory })
+        return NextResponse.json({ message: "updated successfully" }, { status: 201 })
+    } catch (err) {
+        return NextResponse.json({ error: err }, { status: 401 })
+    }
+}

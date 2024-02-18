@@ -6,8 +6,8 @@ import useProfile from '@/hooks/useProfile'
 import { useEffect, useState } from 'react'
 
 type categoryType = {
-    _id:string
-    name:string
+    _id: string
+    name: string
 }
 const CategoryPage = () => {
 
@@ -15,19 +15,29 @@ const CategoryPage = () => {
     const [categories, setCategories] = useState<categoryType[]>([])
     const [error, setError] = useState('')
     const [created, setCreated] = useState(false)
+    const [editing, setEditing] = useState<categoryType | null>(null)
     const { loading, profile } = useProfile()
 
     const handleNewCategory = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (newCategory === "" || newCategory === editing?.name) {
+            setError('No changes has been made')
+            setTimeout(() => {
+                setError('')
+            }, 2000)
+            return
+        }
         const res = await fetch('/api/categories', {
-            method: "POST",
-            body: JSON.stringify(newCategory),
+            method: editing ? 'PUT' : 'POST',
+            body: editing ? JSON.stringify({ _id: editing._id, newCategory: newCategory }) : JSON.stringify(newCategory),
             headers: {
                 "content-type": "application/json"
             }
         })
         if (res.ok) {
             setCreated(true)
+            setNewCategory('')
+            setEditing(null)
             setTimeout(() => {
                 setCreated(false)
             }, 2000);
@@ -36,6 +46,11 @@ const CategoryPage = () => {
             const { error } = await res.json()
             setError(error)
         }
+    }
+
+    const handleEdit = (cat: categoryType) => {
+        setEditing(cat)
+        setNewCategory(cat.name)
     }
 
     useEffect(() => {
@@ -67,7 +82,6 @@ const CategoryPage = () => {
                     </h2>
                 )
             }
-
             {
                 error && (
                     <h2 className="text-center bg-red-100 p-4 rounded-lg border border-red-300 -mb-6 font-medium">
@@ -78,8 +92,9 @@ const CategoryPage = () => {
             <form className='mt-12' onSubmit={handleNewCategory}>
                 <div className='flex gap-x-4 items-end'>
                     <div className='grow'>
-                        <label className='mb-4 block text-gray-500 '>
-                            New category name
+                        <label className='mb-2 block text-gray-500'>
+                            {editing ? 'Update category: ' : "New category name"}
+                            {editing && (<b>{editing.name}</b>)}
                         </label>
                         <input
                             type="text"
@@ -87,8 +102,22 @@ const CategoryPage = () => {
                             onChange={e => setNewCategory(e.target.value)}
                         />
                     </div>
-                    <div className='pb-[18px]'>
-                        <button type='submit'>Create</button>
+                    <div className={`pb-[18px] ${editing && 'flex items-center gap-2'}`}>
+                        <button type='submit'>{editing ? 'Update' : 'Create'}</button>
+                        {
+                            editing && (
+
+                                <button type='button' onClick={() => {
+                                    setEditing(null)
+                                    setNewCategory('')
+                                }
+                                }>
+                                    cancel
+                                </button>
+
+                            )
+                        }
+
                     </div>
                 </div>
 
@@ -96,9 +125,17 @@ const CategoryPage = () => {
             </form>
 
             <div>
+                <h2 className='mt-6 mb-2 text-sm text-gray-500'>
+                    Edit category :
+                </h2>
                 {
                     categories.length > 0 && categories.map((c, idx) => (
-                        <h1 key={idx}>{c.name}</h1>
+                        <div key={idx}
+                            className='border border-gray-400 bg-gray-200 hover:bg-gray-100 transition-all rounded-xl mb-3 py-2 px-4 flex gap-1 cursor-pointer '
+                            onClick={() => handleEdit(c)}
+                        >
+                            <span className='font-medium'>{c.name}</span>
+                        </div>
                     ))
                 }
             </div>
