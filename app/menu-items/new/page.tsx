@@ -3,22 +3,20 @@
 import Loading from "@/app/components/layout/Loading"
 import Tabs from "@/app/components/layout/Tabs"
 import useProfile from "@/hooks/useProfile"
-import { redirect } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { useRef, useState } from "react"
 import PopupDialog from "@/app/components/layout/PopupDialog"
 import PopupContent from "@/app/components/layout/PopupContent"
+import Link from "next/link"
+import Left from "@/app/components/icons/Left"
 
 const NewMenupage = () => {
 
     const popupRef = useRef<HTMLDialogElement>(null)
-
-    const togglePopup = () => {
-        if (!popupRef.current) return
-        popupRef.current.hasAttribute('open') ?
-            popupRef.current.close() : popupRef.current.showModal()
-    }
-
+    const query = useSearchParams()
+    const admin = query.get("admin")
+    const router = useRouter()
 
     const { loading, profile } = useProfile()
     const [formData, setFormData] = useState({
@@ -44,16 +42,7 @@ const NewMenupage = () => {
             }
         })
         if (res.ok) {
-            setSaveStatus("saved")
-            setFormData({
-                imagePath: "",
-                name: "",
-                description: "",
-                price: ""
-            })
-            setTimeout(() => {
-                setSaveStatus(null)
-            }, 2000)
+            router.push('/menu-items?admin=true')
         } else {
             setError('An error occured')
         }
@@ -70,8 +59,14 @@ const NewMenupage = () => {
     }
 
 
-    if (loading) return <Loading />
-    if (!loading && !profile.admin) redirect('/profile')
+    const togglePopup = () => {
+        if (!popupRef.current) return
+        popupRef.current.hasAttribute('open') ?
+            popupRef.current.close() : popupRef.current.showModal()
+    }
+
+    if (loading && !admin) return <Loading />
+    if (!loading && !profile.admin) router.push('/profile')
     return (
         <div className="mt-20 max-w-[500px] mx-auto">
             <Tabs isAdmin={true} />
@@ -98,7 +93,18 @@ const NewMenupage = () => {
                     </h2>
                 )
             }
+            <div className="w-full mb-12 mt-8">
+                <Link href={
+                    {
+                        pathname: "/menu-items",
+                        query: { admin: "true" }
+                    }
+                } className="button flex items-center gap-x-2 justify-center">
+                    <Left className="w-6" /> Show all menu items
+                </Link>
+            </div>
             <div className="flex items-start gap-10">
+
                 <div>
                     <div className="rounded-lg flex flex-col items-center gap-y-2 justify-center">
 

@@ -1,5 +1,5 @@
 'use client'
-import { redirect } from 'next/navigation'
+import { redirect, useSearchParams } from 'next/navigation'
 import Loading from '../components/layout/Loading'
 import Tabs from '../components/layout/Tabs'
 import useProfile from '@/hooks/useProfile'
@@ -17,6 +17,8 @@ const CategoryPage = () => {
     const [created, setCreated] = useState(false)
     const [editing, setEditing] = useState<categoryType | null>(null)
     const { loading, profile } = useProfile()
+    const query = useSearchParams()
+    const admin = query.get("admin")
 
     const handleNewCategory = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -67,7 +69,7 @@ const CategoryPage = () => {
     }, [created])
 
 
-    if (loading) return <Loading />
+    if (loading && !admin) return <Loading />
 
     if (!loading && !profile.admin) {
         redirect('/profile')

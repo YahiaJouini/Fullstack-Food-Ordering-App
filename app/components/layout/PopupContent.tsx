@@ -18,7 +18,7 @@ const PopupContent = ({ formData, setFormData }: PropsType) => {
     return (
         <div className="w-[800px] h-[600px] overflow-y-auto scrollbar-thin scrollbar-webkit">
 
-            <div className="grid grid-cols-3 gap-10 p-10">
+            <div className="flex flex-wrap items-center justify-center gap-10 p-10">
                 {
                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => {
                         const path = `/menu-images/food${i}.jpg`
@@ -26,11 +26,10 @@ const PopupContent = ({ formData, setFormData }: PropsType) => {
                         return (
                             <div
                                 className={`border-4  rounded-xl element-shadow 
-                            w-[170px] h-[150px] relative cursor-pointer 
-                            ${selected ? "border-green-600" : 'border-gray-300'}`}
+                            w-[170px] h-[150px] relative cursor-pointer transition-all
+                            ${selected ? "border-green-600 scale-110" : 'border-gray-300'}`}
                                 onClick={() => setFormData(prev => ({ ...prev, imagePath: path }))}
-                                key={i}
-                            >
+                                key={i}>
                                 <Image
                                     src={path}
                                     fill

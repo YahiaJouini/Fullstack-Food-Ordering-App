@@ -9,13 +9,29 @@ const Tabs = ({ isAdmin }: { isAdmin: boolean }) => {
             {
                 isAdmin && (
                     <>
-                        <Link className={path === "/categories" ? 'active' : ''} href="/categories">
+                        <Link className={path === "/categories" ? 'active' : ''}
+                            href={
+
+                                {
+                                    pathname: "/categories",
+                                    query: { admin: "true" }
+                                }}>
                             Categories
                         </Link>
-                        <Link className={/menu-items/.test(path) ? 'active' : ''} href="/menu-items">
+                        <Link className={/menu-items/.test(path) ? 'active' : ''}
+                            href={
+                                {
+                                    pathname: "/menu-items",
+                                    query: { admin: "true" }
+                                }}>
                             Menu Items
                         </Link>
-                        <Link className={path === "/users" ? 'active' : ''} href="/users">
+                        <Link className={path === "/users" ? 'active' : ''} href={
+
+                            {
+                                pathname: "/users",
+                                query: { admin: "true" }
+                            }}>
                             Users
                         </Link>
                     </>
