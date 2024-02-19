@@ -12,7 +12,7 @@ const Header = () => {
             const { user } = session.data
             const userName = user?.name || user?.email
             return (<div className="flex items-center gap-x-6">
-                <Link href="/profile">{userName}</Link>
+                <Link href="/profile">Hello, {userName?.split(' ')[0]}</Link>
                 <Logout />
             </div>)
 

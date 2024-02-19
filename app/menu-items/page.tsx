@@ -1,13 +1,14 @@
 "use client";
 import useProfile from "@/hooks/useProfile";
 import Tabs from "../components/layout/Tabs";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect } from "next/navigation";
 import Loading from "../components/layout/Loading";
 import Link from "next/link";
 import Right from "../components/icons/Right";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
-type MenuItem = {
+export type MenuItem = {
     _id: string,
     name: string,
     imagePath: string,
@@ -16,8 +17,6 @@ type MenuItem = {
 }
 const MenuPage = () => {
 
-    const query = useSearchParams()
-    const admin = query.get("admin")
     const { loading, profile } = useProfile();
     const [menu, setMenu] = useState<MenuItem[] | null>(null)
 
@@ -34,7 +33,7 @@ const MenuPage = () => {
         fetchMenu()
     }, [])
 
-    if (loading && !admin) return <Loading />;
+    if (loading) return <Loading />;
 
     if (!loading && !profile.admin) {
         redirect("/profile");
@@ -50,26 +49,44 @@ const MenuPage = () => {
                         query: { admin: "true" }
                     }}
                     className="button flex items-center gap-x-2 justify-center">
-                    Create new menu item <Right className="w-6" />
+                    Create a new menu item <Right className="w-6" />
                 </Link>
             </div>
 
             <div>
                 {
                     menu && (
-                        menu.map(item => (
-                            <div key={item._id}>
-                                {item.name}
+                        <>
+                            <h2 className="text-sm text-gray-500 mt-8 mb-2">Edit menu item</h2>
+
+                            <div className="grid grid-cols-3 gap-4">
+                                {menu.map(item => (
+                                    <Link
+                                        href={{
+                                            pathname: `/menu-items/edit/${item._id}`,
+                                            query: { admin: true }
+                                        }}
+                                        className="button p-4 gap-y-1 mb-3 flex flex-col items-center justify-center"
+                                        key={item._id}
+                                    >
+                                        <div className="w-[120px] h-[90px] relative rounded-lg">
+                                            <Image src={item.imagePath ?? ""}
+                                                alt='Item image' fill
+                                                className="object-cover rounded-lg" />
+                                        </div>
+
+                                        {item.name}
+                                    </Link>
+                                ))}
+
                             </div>
-                        ))
+
+                        </>
                     )
+
                 }
             </div>
-
-            {
-
-            }
-        </section>
+        </section >
     );
 };
 

@@ -9,7 +9,6 @@ export const POST = async (req: Request) => {
     } catch (err) {
         return NextResponse.json({ error: err }, { status: 401 })
     }
-
 }
 
 export const GET = async () => {
@@ -19,4 +18,15 @@ export const GET = async () => {
     } catch (err) {
         return NextResponse.json({ error: err }, { status: 401 })
     }
+}
+
+export const PUT = async (req: Request) => {
+    const data = await req.json()
+    const res = await Menu.findByIdAndUpdate(data.id, data)
+
+    if (!res) {
+        return NextResponse.json({ err: "Update Failed" }, { status: 401 })
+    }
+    return NextResponse.json({ message: "Updated Successfully" }, { status: 201 })
+
 }

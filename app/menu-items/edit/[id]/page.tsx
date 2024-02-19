@@ -3,18 +3,21 @@
 import Loading from "@/app/components/layout/Loading"
 import Tabs from "@/app/components/layout/Tabs"
 import useProfile from "@/hooks/useProfile"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import PopupDialog from "@/app/components/layout/PopupDialog"
 import PopupContent from "@/app/components/layout/PopupContent"
 import Link from "next/link"
 import Left from "@/app/components/icons/Left"
+import { MenuItem } from "../../page"
 
-const NewMenupage = () => {
+
+const EditMenuPage = () => {
 
     const popupRef = useRef<HTMLDialogElement>(null)
     const router = useRouter()
+    const { id } = useParams()
 
     const { loading, profile } = useProfile()
     const [formData, setFormData] = useState({
@@ -33,8 +36,8 @@ const NewMenupage = () => {
         if (emptyField) return
         setSaveStatus("saving")
         const res = await fetch('/api/menu-item', {
-            method: "POST",
-            body: JSON.stringify(formData),
+            method: "PUT",
+            body: JSON.stringify({ ...formData, id }),
             headers: {
                 "Content-Type": "application/json"
             }
@@ -43,6 +46,7 @@ const NewMenupage = () => {
             router.push('/menu-items?admin=true')
         } else {
             setError('An error occured')
+            setSaveStatus(null)
         }
 
         if (saveStatus !== null) setSaveStatus(null)
@@ -62,6 +66,25 @@ const NewMenupage = () => {
         popupRef.current.hasAttribute('open') ?
             popupRef.current.close() : popupRef.current.showModal()
     }
+
+    useEffect(() => {
+
+        const fetchMenu = async () => {
+            const data = await fetch("/api/menu-item")
+            if (data.ok) {
+                const res: MenuItem[] = await data.json()
+                const item = res.filter(r => r._id === id)
+                setFormData({
+                    imagePath: item[0].imagePath,
+                    name: item[0].name,
+                    description: item[0].description,
+                    price: item[0].price
+                })
+            }
+        }
+
+        fetchMenu()
+    }, [])
 
     if (loading) return <Loading />
     if (!loading && !profile.admin) router.push('/profile')
@@ -173,4 +196,4 @@ const NewMenupage = () => {
     )
 }
 
-export default NewMenupage
+export default EditMenuPage
