@@ -2,17 +2,22 @@ import { MenuItem } from "@/app/menu-items/page"
 import Image from "next/image"
 import PopupDialog from "./PopupDialog"
 import PopupContent from "./PopupContent"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 
 type propType = {
     setFormData: React.Dispatch<React.SetStateAction<MenuItem>>
     formData: MenuItem,
     handleMenuSubmit: (e: React.FormEvent) => Promise<void>
 }
+
+type sizesType = {
+    name:"",
+    price:""
+}
 const MenuItemForm = ({ formData, handleMenuSubmit, setFormData }: propType) => {
-    console.log("component worked fine")
 
     const popupRef = useRef<HTMLDialogElement>(null)
+    const [sizes, setSize] = useState<sizesType[]>([]);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name
         const value = e.target.value
@@ -25,6 +30,12 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData }: propType) => 
         if (!popupRef.current) return
         popupRef.current.hasAttribute('open') ?
             popupRef.current.close() : popupRef.current.showModal()
+    }
+
+    const addSize = () => {
+        setSize(prev => {
+            return [...prev, { name: "", price: "0" }];
+        })
     }
     return (
         <>
@@ -85,6 +96,17 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData }: propType) => 
                         onChange={handleChange}
 
                     />
+                    <div className="bg-gray-300 p-2 rounded-lg mb-2">
+                        <label>Sizes</label>
+                        <button 
+                        className="bg-white"
+                        type="button"
+                        onClick={addSize}
+                        >
+                            Add item size
+                        </button>
+
+                    </div>
                     <button type="submit">Save</button>
                 </form>
 
