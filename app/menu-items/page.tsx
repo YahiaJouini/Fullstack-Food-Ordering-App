@@ -7,13 +7,16 @@ import Link from "next/link";
 import Right from "../components/icons/Right";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { ExtraType } from "../components/layout/MenuItemForm";
 
 export type MenuItem = {
     _id?: string,
     name: string,
     imagePath: string,
     description: string,
-    price: string
+    price: string,
+    sizes?: ExtraType[],
+    ingredients?: ExtraType[]
 }
 const MenuPage = () => {
 

@@ -52,24 +52,6 @@ const EditMenuPage = () => {
     if (saveStatus !== null) setSaveStatus(null)
   }
 
-  useEffect(() => {
-    const fetchMenu = async () => {
-      const data = await fetch("/api/menu-item");
-      if (data.ok) {
-        const res: MenuItem[] = await data.json();
-        const item = res.filter((r) => r._id === id);
-        setFormData({
-          imagePath: item[0].imagePath,
-          name: item[0].name,
-          description: item[0].description,
-          price: item[0].price,
-        })
-      }
-    }
-
-    fetchMenu();
-  }, []);
-
   if (loading) return <Loading />
   if (!loading && !profile.admin) router.push("/profile")
   return (

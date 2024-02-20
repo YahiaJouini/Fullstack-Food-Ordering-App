@@ -2,8 +2,9 @@ import { MenuItem } from "@/app/menu-items/page"
 import Image from "next/image"
 import PopupDialog from "./PopupDialog"
 import PopupContent from "./PopupContent"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import MenuItemAddExtra from "./MenuItemAddExtra"
+import { useParams } from "next/navigation"
 
 type propType = {
   setFormData: React.Dispatch<React.SetStateAction<MenuItem>>
@@ -17,8 +18,8 @@ export type ExtraType = {
 }
 
 const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, }: propType) => {
-
   const popupRef = useRef<HTMLDialogElement>(null)
+  const { id } = useParams();
 
   const [sizes, setSize] = useState<ExtraType[]>([])
   const [ingredients, setIngredients] = useState<ExtraType[]>([])
@@ -36,6 +37,33 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, }: propType) =>
       ? popupRef.current.close()
       : popupRef.current.showModal()
   }
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      const data = await fetch("/api/menu-item");
+      if (data.ok) {
+        const res: MenuItem[] = await data.json();
+        const item = res.filter((r) => r._id === id);
+
+        setFormData({
+          imagePath: item[0].imagePath ?? "",
+          name: item[0].name ?? "",
+          description: item[0].description ?? "",
+          price: item[0].price ?? "",
+        })
+
+        if (item[0].sizes) {
+          setSize(item[0].sizes)
+        }
+        if (item[0].ingredients) {
+          setIngredients(item[0].ingredients)
+        }
+      }
+    }
+    if (id) {
+      fetchMenu()
+    }
+  }, [])
 
   return (
     <>

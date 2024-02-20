@@ -39,7 +39,7 @@ const NewMenupage = () => {
 
 
         if (res.ok) {
-            router.push('/menu-items?admin=true')
+            router.push('/menu-items')
         } else {
             setError('An error occured')
         }
