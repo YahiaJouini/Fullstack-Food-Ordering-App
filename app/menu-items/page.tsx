@@ -33,10 +33,10 @@ const MenuPage = () => {
         fetchMenu()
     }, [])
 
-    if (loading) return <Loading />;
+    if (loading) return <Loading />
 
     if (!loading && !profile.admin) {
-        redirect("/profile");
+        redirect("/profile")
     }
     return (
         <section className="mt-20 max-w-[500px] mx-auto">

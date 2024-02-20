@@ -3,16 +3,12 @@ type profileType = {
     email: string,
     admin: boolean
 }
-import { useSearchParams } from "next/navigation";
 const useProfile = () => {
-    const query = useSearchParams()
-    const admin = query.get('admin')
 
-
-    const [loading, setLoading] = useState(admin !== 'true')
+    const [loading, setLoading] = useState(true)
     const [profile, setProfile] = useState<profileType>({
         email: "",
-        admin: admin === 'true'
+        admin: false
     })
 
 
@@ -32,9 +28,7 @@ const useProfile = () => {
 
 
     useEffect(() => {
-        if (!admin) {
-            fetchProfile()
-        }
+        fetchProfile()
     }, [])
     return { loading, profile }
 }

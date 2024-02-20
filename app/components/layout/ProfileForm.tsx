@@ -1,7 +1,6 @@
 "use client"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
-import Link from "next/link"
 import { useEffect, useState } from "react"
 import Tabs from "./Tabs"
 import Loading from "./Loading"

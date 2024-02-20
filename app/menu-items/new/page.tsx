@@ -4,17 +4,12 @@ import Loading from "@/app/components/layout/Loading"
 import Tabs from "@/app/components/layout/Tabs"
 import useProfile from "@/hooks/useProfile"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { useRef, useState } from "react"
-import PopupDialog from "@/app/components/layout/PopupDialog"
-import PopupContent from "@/app/components/layout/PopupContent"
+import { useState } from "react"
 import Link from "next/link"
 import Left from "@/app/components/icons/Left"
-import MenuItemForm from "@/app/components/layout/MenuItemForm"
+import MenuItemForm, { ExtraType } from "@/app/components/layout/MenuItemForm"
 
 const NewMenupage = () => {
-
-    const popupRef = useRef<HTMLDialogElement>(null)
     const router = useRouter()
 
     const { loading, profile } = useProfile()
@@ -28,18 +23,21 @@ const NewMenupage = () => {
     const [error, setError] = useState("")
 
 
-    const handleMenuSubmit = async (e: React.FormEvent) => {
+    const handleMenuSubmit = async (e: React.FormEvent, sizes: ExtraType[], ingredients: ExtraType[]) => {
         e.preventDefault()
         const emptyField = Object.values(formData).some(value => value === "")
         if (emptyField) return
+
         setSaveStatus("saving")
         const res = await fetch('/api/menu-item', {
             method: "POST",
-            body: JSON.stringify(formData),
+            body: JSON.stringify({ ...formData, sizes, ingredients }),
             headers: {
                 "Content-Type": "application/json"
             }
         })
+
+
         if (res.ok) {
             router.push('/menu-items?admin=true')
         } else {
@@ -48,20 +46,6 @@ const NewMenupage = () => {
 
         if (saveStatus !== null) setSaveStatus(null)
 
-    }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const name = e.target.name
-        const value = e.target.value
-
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
-
-
-    const togglePopup = () => {
-        if (!popupRef.current) return
-        popupRef.current.hasAttribute('open') ?
-            popupRef.current.close() : popupRef.current.showModal()
     }
 
     if (loading) return <Loading />
@@ -102,10 +86,10 @@ const NewMenupage = () => {
                     <Left className="w-6" /> View all menu items
                 </Link>
             </div>
-            <MenuItemForm 
-            setFormData={setFormData}
-            formData={formData} 
-            handleMenuSubmit={handleMenuSubmit} />
+            <MenuItemForm
+                setFormData={setFormData}
+                formData={formData}
+                handleMenuSubmit={handleMenuSubmit} />
         </div>
     )
 }
