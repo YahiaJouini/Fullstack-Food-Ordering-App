@@ -16,7 +16,7 @@ type PropsType = {
 }
 const PopupContent = ({ formData, setFormData }: PropsType) => {
     return (
-        <div className="w-[800px] h-[600px] overflow-y-auto scrollbar-thin scrollbar-webkit">
+        <div className="w-[800px] h-[500px] overflow-y-auto scrollbar-thin scrollbar-webkit">
 
             <div className="flex flex-wrap items-center justify-center gap-10 p-10">
                 {

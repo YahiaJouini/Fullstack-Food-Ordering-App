@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export type MenuItem = {
-    _id: string,
+    _id?: string,
     name: string,
     imagePath: string,
     description: string,
@@ -66,7 +66,7 @@ const MenuPage = () => {
                                             pathname: `/menu-items/edit/${item._id}`,
                                             query: { admin: true }
                                         }}
-                                        className="button p-4 gap-y-1 mb-3 flex flex-col items-center justify-center"
+                                        className="button p-4 gap-y-1 mb-3 flex flex-col items-center justify-center text-center"
                                         key={item._id}
                                     >
                                         <div className="w-[120px] h-[90px] relative rounded-lg">
