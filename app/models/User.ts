@@ -9,6 +9,7 @@ const UserSchema = new Schema({
         required: [true, "The email is required"],
         lowercase: true,
     },
+    image: String,
     password: {
         type: String,
         validate: (pass: string) => {
@@ -22,9 +23,9 @@ const UserSchema = new Schema({
         adress: String,
         postal: String
     },
-    admin : {
-        type:Boolean,
-        default:false
+    admin: {
+        type: Boolean,
+        default: false
     }
 
 }, { timestamps: true })

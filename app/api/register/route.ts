@@ -27,8 +27,15 @@ export const POST = async (req: Request, res: Response) => {
             adress: "",
             postal: ""
         }
+        const image = ""
 
-        const user = await User.create({ fullname: fullname, email, password: hashedPassword, location: location })
+        const user = await User.create({
+            fullname: fullname,
+            email,
+            password: hashedPassword,
+            location: location,
+            image: image
+        })
 
         return NextResponse.json({ userData: user }, { status: 200 })
 

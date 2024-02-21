@@ -54,8 +54,9 @@ const handler = NextAuth({
                             adress: "",
                             postal: ""
                         }
+                        const image = user.image ? user.image : ""
 
-                        await User.create({ fullname: user.name, email: user?.email, location: location })
+                        await User.create({ fullname: user.name, email: user?.email, location: location, image: image })
                         console.log("user created")
 
                     } catch (err) {
