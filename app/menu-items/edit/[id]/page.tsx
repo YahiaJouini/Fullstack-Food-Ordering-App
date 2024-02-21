@@ -4,14 +4,20 @@ import Loading from "@/app/components/layout/Loading"
 import Tabs from "@/app/components/layout/Tabs"
 import useProfile from "@/hooks/useProfile"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import Left from "@/app/components/icons/Left"
-import { MenuItem } from "../../page"
 import MenuItemForm, { ExtraType } from "@/app/components/layout/MenuItemForm"
 import { MenuItem as MenuItemType } from "@/app/menu-items/page"
 
+
+export type submitFormProps = {
+  e: React.FormEvent,
+  sizes: ExtraType[],
+  ingredients: ExtraType[],
+}
 const EditMenuPage = () => {
+
   const router = useRouter();
   const { id } = useParams();
 
@@ -27,7 +33,7 @@ const EditMenuPage = () => {
 
   const [error, setError] = useState("")
 
-  const handleMenuSubmit = async (e: React.FormEvent, sizes: ExtraType[], ingredients: ExtraType[]) => {
+  const handleMenuSubmit = async ({ e, sizes, ingredients }: submitFormProps) => {
     e.preventDefault();
     const emptyField = Object.values(formData).some((value) => value === "")
 
@@ -43,7 +49,25 @@ const EditMenuPage = () => {
     })
 
     if (res.ok) {
-      router.push("/menu-items?admin=true")
+      router.push("/menu-items")
+    } else {
+      setError("An error occured")
+      setSaveStatus(null)
+    }
+
+    if (saveStatus !== null) setSaveStatus(null)
+  }
+
+  const handleMenuDelete = async (id: string) => {
+    const res = await fetch('/api/menu-item', {
+      method: "DELETE",
+      body: JSON.stringify(id),
+      headers: {
+        "Content-Type": "Application/json"
+      }
+    })
+    if (res.ok) {
+      router.push("/menu-items")
     } else {
       setError("An error occured")
       setSaveStatus(null)
@@ -76,10 +100,7 @@ const EditMenuPage = () => {
       )}
       <div className="w-full mb-12 mt-8">
         <Link
-          href={{
-            pathname: "/menu-items",
-            query: { admin: "true" },
-          }}
+          href="/menu-items"
           className="button flex items-center gap-x-2 justify-center"
         >
           <Left className="w-6" /> View all menu items
@@ -89,6 +110,7 @@ const EditMenuPage = () => {
         setFormData={setFormData}
         formData={formData}
         handleMenuSubmit={handleMenuSubmit}
+        handleMenuDelete={handleMenuDelete}
       />
     </div>
   );

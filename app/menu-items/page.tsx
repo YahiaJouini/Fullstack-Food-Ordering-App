@@ -45,12 +45,7 @@ const MenuPage = () => {
         <section className="mt-20 max-w-[500px] mx-auto">
             <Tabs isAdmin={true} />
             <div className="w-full">
-                <Link href={
-
-                    {
-                        pathname: "/menu-items/new",
-                        query: { admin: "true" }
-                    }}
+                <Link href="/menu-items/new"
                     className="button flex items-center gap-x-2 justify-center">
                     Create a new menu item <Right className="w-6" />
                 </Link>
@@ -65,10 +60,7 @@ const MenuPage = () => {
                             <div className="grid grid-cols-3 gap-4">
                                 {menu.map(item => (
                                     <Link
-                                        href={{
-                                            pathname: `/menu-items/edit/${item._id}`,
-                                            query: { admin: true }
-                                        }}
+                                        href={`/menu-items/edit/${item._id}`}
                                         className="button p-4 gap-y-1 mb-3 flex flex-col items-center justify-center text-center"
                                         key={item._id}
                                     >

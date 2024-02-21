@@ -8,6 +8,7 @@ import { useState } from "react"
 import Link from "next/link"
 import Left from "@/app/components/icons/Left"
 import MenuItemForm, { ExtraType } from "@/app/components/layout/MenuItemForm"
+import { submitFormProps } from "../edit/[id]/page"
 
 const NewMenupage = () => {
     const router = useRouter()
@@ -23,7 +24,7 @@ const NewMenupage = () => {
     const [error, setError] = useState("")
 
 
-    const handleMenuSubmit = async (e: React.FormEvent, sizes: ExtraType[], ingredients: ExtraType[]) => {
+    const handleMenuSubmit = async ({ e, sizes, ingredients }: submitFormProps) => {
         e.preventDefault()
         const emptyField = Object.values(formData).some(value => value === "")
         if (emptyField) return
@@ -77,12 +78,8 @@ const NewMenupage = () => {
                 )
             }
             <div className="w-full mb-12 mt-8">
-                <Link href={
-                    {
-                        pathname: "/menu-items",
-                        query: { admin: "true" }
-                    }
-                } className="button flex items-center gap-x-2 justify-center">
+                <Link href="/menu-items"
+                    className="button flex items-center gap-x-2 justify-center">
                     <Left className="w-6" /> View all menu items
                 </Link>
             </div>

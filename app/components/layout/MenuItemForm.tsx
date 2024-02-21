@@ -5,11 +5,13 @@ import PopupContent from "./PopupContent"
 import { useEffect, useRef, useState } from "react"
 import MenuItemAddExtra from "./MenuItemAddExtra"
 import { useParams } from "next/navigation"
+import { submitFormProps } from "@/app/menu-items/edit/[id]/page"
 
 type propType = {
   setFormData: React.Dispatch<React.SetStateAction<MenuItem>>
   formData: MenuItem
-  handleMenuSubmit: (e: React.FormEvent, sizes: ExtraType[], ingredients: ExtraType[]) => Promise<void>
+  handleMenuSubmit: ({ e, sizes, ingredients }: submitFormProps) => Promise<void>,
+  handleMenuDelete?: (id: string) => void
 }
 
 export type ExtraType = {
@@ -17,7 +19,7 @@ export type ExtraType = {
   price: string
 }
 
-const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, }: propType) => {
+const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, handleMenuDelete }: propType) => {
   const popupRef = useRef<HTMLDialogElement>(null)
   const { id } = useParams();
 
@@ -97,7 +99,7 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, }: propType) =>
             </button>
           </div>
         </div>
-        <form className="grow" onSubmit={(e) => handleMenuSubmit(e, sizes, ingredients)}>
+        <form className="grow" onSubmit={(e) => handleMenuSubmit({ e, sizes, ingredients })}>
 
           <input
             type="text"
@@ -140,6 +142,17 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, }: propType) =>
           />
 
           <button type="submit">Save</button>
+          {
+            id && typeof id === "string" && (
+              <button
+                className="mt-2"
+                onClick={() => handleMenuDelete && handleMenuDelete(id)}
+                type="button"
+              >
+                Delete
+              </button>
+            )
+          }
 
         </form>
       </div>

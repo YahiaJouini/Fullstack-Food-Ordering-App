@@ -28,5 +28,13 @@ export const PUT = async (req: Request) => {
         return NextResponse.json({ err: "Update Failed" }, { status: 401 })
     }
     return NextResponse.json({ message: "Updated Successfully" }, { status: 201 })
+}
 
+export const DELETE = async (req: Request) => {
+    const id = await req.json()
+    const res = await Menu.deleteOne({ _id: id })
+    if (!res) {
+        return NextResponse.json({ error: "Unable to delete" }, { status: 400 })
+    }
+    return NextResponse.json({ message: "Success" }, { status: 200 })
 }
