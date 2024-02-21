@@ -26,3 +26,12 @@ export const PUT = async (req: Request) => {
         return NextResponse.json({ error: err }, { status: 401 })
     }
 }
+
+export const DELETE = async (req: Request) => {
+    const id = await req.json()
+    const res = await Category.deleteOne({ _id: id })
+    if (!res) {
+        return NextResponse.json({ error: 'Unable to delete' }, { status: 400 })
+    }
+    return NextResponse.json({ message: "deleted successfully" }, { status: 201 })
+}

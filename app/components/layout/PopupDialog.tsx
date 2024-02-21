@@ -8,12 +8,14 @@ type PropsType = {
         name: string;
         description: string;
         price: string;
+        category: string
     },
     setFormData: React.Dispatch<React.SetStateAction<{
         imagePath: string;
         name: string;
         description: string;
         price: string;
+        category: string
     }>>
 }
 

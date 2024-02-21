@@ -15,6 +15,7 @@ export type MenuItem = {
     imagePath: string,
     description: string,
     price: string,
+    category: string
     sizes?: ExtraType[],
     ingredients?: ExtraType[]
 }
@@ -42,7 +43,7 @@ const MenuPage = () => {
         redirect("/profile")
     }
     return (
-        <section className="mt-20 max-w-[500px] mx-auto">
+        <section className="mt-20 max-w-xl mx-auto">
             <Tabs isAdmin={true} />
             <div className="w-full">
                 <Link href="/menu-items/new"
@@ -78,7 +79,6 @@ const MenuPage = () => {
 
                         </>
                     )
-
                 }
             </div>
         </section >

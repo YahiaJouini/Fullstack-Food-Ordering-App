@@ -143,7 +143,7 @@ const ProfileForm = () => {
     if (session.status == "loading" || !fetchedInfo) return <Loading />
 
     return (
-        <div className="max-w-[500px] mx-auto">
+        <div className="max-w-xl mx-auto">
             <Tabs isAdmin={fetchedInfo?.isAdmin} />
             {
                 saveStatus === "saved" && (

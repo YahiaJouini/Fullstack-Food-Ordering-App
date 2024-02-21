@@ -28,6 +28,7 @@ const EditMenuPage = () => {
     name: "",
     description: "",
     price: "",
+    category: ""
   });
   const [saveStatus, setSaveStatus] = useState<null | "saving" | "saved">(null)
 
@@ -79,7 +80,7 @@ const EditMenuPage = () => {
   if (loading) return <Loading />
   if (!loading && !profile.admin) router.push("/profile")
   return (
-    <div className="mt-20 max-w-[500px] mx-auto">
+    <div className="mt-20 max-w-xl mx-auto">
       <Tabs isAdmin={true} />
       {saveStatus === "saved" && (
         <h2 className="text-center bg-green-100 p-4 rounded-lg border border-green-300 my-6 font-medium">

@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+import { Types, Schema, model, models } from "mongoose";
 
 const ExtraPriceShema = new Schema({
     name: String,
@@ -10,6 +10,7 @@ const MenuSchema = new Schema({
     name: String,
     description: String,
     price: String,
+    category: Types.ObjectId,
     sizes: [ExtraPriceShema],
     ingredients: [ExtraPriceShema]
 

@@ -5,7 +5,7 @@ import Tabs from '../components/layout/Tabs'
 import useProfile from '@/hooks/useProfile'
 import { useEffect, useState } from 'react'
 
-type categoryType = {
+export type categoryType = {
     _id: string
     name: string
 }
@@ -64,6 +64,27 @@ const CategoryPage = () => {
         getCategory()
     }, [created])
 
+    const handleDelete = async (id: string) => {
+        const res = await fetch('/api/categories', {
+            method: "DELETE",
+            body: JSON.stringify(id),
+            headers: {
+                "Content-Type": "Application/json"
+            }
+        })
+        if (res.ok) {
+            setCreated(true)
+            setNewCategory('')
+            setEditing(null)
+            setTimeout(() => {
+                setCreated(false)
+            }, 2000);
+        } else {
+            const { error } = await res.json()
+            setError(error)
+        }
+    }
+
 
     if (loading) return <Loading />
 
@@ -71,7 +92,7 @@ const CategoryPage = () => {
         redirect('/profile')
     }
     return (
-        <section className='mt-20 max-w-[500px] mx-auto'>
+        <section className='mt-20 max-w-xl mx-auto'>
             <Tabs isAdmin={true} />
             {
                 created && (
@@ -125,17 +146,28 @@ const CategoryPage = () => {
 
             <div>
                 <h2 className='mt-6 mb-2 text-sm text-gray-500'>
-                    Edit category :
+                    Categories :
                 </h2>
                 {
-                    categories.length > 0 && categories.map((c, idx) => (
+                    categories.length > 0 ? categories.map((c, idx) => (
                         <div key={idx}
-                            className='border border-gray-400 bg-gray-200 hover:bg-gray-100 transition-all rounded-xl mb-3 py-2 px-4 flex gap-1 cursor-pointer '
-                            onClick={() => handleEdit(c)}
+                            className='bg-gray-200 rounded-lg flex items-center justify-between gap-1 p-2 px-4 mb-3'
                         >
                             <span className='font-medium'>{c.name}</span>
+                            <div className='flex items-center gap-x-3'>
+                                <button onClick={() => handleEdit(c)}>
+                                    Edit
+                                </button>
+                                <button onClick={() => handleDelete(c._id)}>
+                                    Delete
+                                </button>
+                            </div>
                         </div>
-                    ))
+                    )) : (
+                        <h1 className='text-lg font-medium'>
+                            No categories available
+                        </h1>
+                    )
                 }
             </div>
         </section>

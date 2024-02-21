@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 const Tabs = ({ isAdmin }: { isAdmin: boolean }) => {
     const path = usePathname()
     return (
-        <div className="flex items-center gap-x-4 justify-center my-10 tabs">
+        <div className={`flex items-center ${isAdmin ? 'justify-between' : 'justify-center'} my-10 tabs`}>
             <Link className={path === "/profile" ? 'active' : ''} href="/profile">Profile</Link>
             {
                 isAdmin && (
@@ -17,9 +17,13 @@ const Tabs = ({ isAdmin }: { isAdmin: boolean }) => {
                             href="/menu-items">
                             Menu Items
                         </Link>
-                        <Link className={path === "/users" ? 'active' : ''}
+                        <Link className={/users/.test(path) ? 'active' : ''}
                             href='/users'>
                             Users
+                        </Link>
+                        <Link className={path === "/orders" ? 'active' : ''}
+                            href='/orders'>
+                            Orders
                         </Link>
                     </>
                 )

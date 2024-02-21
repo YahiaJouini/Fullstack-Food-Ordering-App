@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import Link from "next/link"
 import Left from "@/app/components/icons/Left"
-import MenuItemForm, { ExtraType } from "@/app/components/layout/MenuItemForm"
+import MenuItemForm from "@/app/components/layout/MenuItemForm"
 import { submitFormProps } from "../edit/[id]/page"
 
 const NewMenupage = () => {
@@ -18,7 +18,8 @@ const NewMenupage = () => {
         imagePath: "",
         name: "",
         description: "",
-        price: ""
+        price: "",
+        category: ""
     })
     const [saveStatus, setSaveStatus] = useState<null | "saving" | "saved">(null)
     const [error, setError] = useState("")
@@ -26,6 +27,7 @@ const NewMenupage = () => {
 
     const handleMenuSubmit = async ({ e, sizes, ingredients }: submitFormProps) => {
         e.preventDefault()
+        console.log(formData)
         const emptyField = Object.values(formData).some(value => value === "")
         if (emptyField) return
 
@@ -52,7 +54,7 @@ const NewMenupage = () => {
     if (loading) return <Loading />
     if (!loading && !profile.admin) router.push('/profile')
     return (
-        <div className="mt-20 max-w-[500px] mx-auto">
+        <div className="mt-20 max-w-xl mx-auto">
             <Tabs isAdmin={true} />
             {
                 saveStatus === "saved" && (

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import MenuItemAddExtra from "./MenuItemAddExtra"
 import { useParams } from "next/navigation"
 import { submitFormProps } from "@/app/menu-items/edit/[id]/page"
+import { categoryType } from "@/app/categories/page"
 
 type propType = {
   setFormData: React.Dispatch<React.SetStateAction<MenuItem>>
@@ -25,7 +26,7 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, handleMenuDelet
 
   const [sizes, setSize] = useState<ExtraType[]>([])
   const [ingredients, setIngredients] = useState<ExtraType[]>([])
-
+  const [categories, setCategories] = useState<categoryType[]>([])
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name
     const value = e.target.value
@@ -40,31 +41,50 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, handleMenuDelet
       : popupRef.current.showModal()
   }
 
-  useEffect(() => {
-    const fetchMenu = async () => {
-      const data = await fetch("/api/menu-item");
-      if (data.ok) {
-        const res: MenuItem[] = await data.json();
-        const item = res.filter((r) => r._id === id);
 
-        setFormData({
-          imagePath: item[0].imagePath ?? "",
-          name: item[0].name ?? "",
-          description: item[0].description ?? "",
-          price: item[0].price ?? "",
-        })
+  const fetchMenu = async () => {
+    const data = await fetch("/api/menu-item");
+    if (data.ok) {
+      const res: MenuItem[] = await data.json();
+      const item = res.filter((r) => r._id === id);
 
-        if (item[0].sizes) {
-          setSize(item[0].sizes)
-        }
-        if (item[0].ingredients) {
-          setIngredients(item[0].ingredients)
-        }
+      setFormData({
+        imagePath: item[0].imagePath ?? "",
+        name: item[0].name ?? "",
+        description: item[0].description ?? "",
+        price: item[0].price ?? "",
+        category: item[0].category ?? ""
+      })
+
+      if (item[0].sizes) {
+        setSize(item[0].sizes)
+      }
+      if (item[0].ingredients) {
+        setIngredients(item[0].ingredients)
       }
     }
+  }
+
+
+  const fetchCategories = async () => {
+    const res = await fetch('/api/categories')
+
+    if (res.ok) {
+      const temp = await res.json()
+      setCategories(temp.categories)
+    }
+  }
+
+  const handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value
+    setFormData(prev => ({ ...prev, category: value }))
+  }
+
+  useEffect(() => {
     if (id) {
       fetchMenu()
     }
+    fetchCategories()
   }, [])
 
   return (
@@ -117,6 +137,16 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, handleMenuDelet
             onChange={handleChange}
           />
 
+          {
+            <select className="cursor-pointer" value={formData.category} onChange={handleCategory}>
+              {
+                categories.map(cat => (
+                  <option key={cat._id} value={cat._id}>{cat.name}</option>
+                ))
+              }
+            </select>
+          }
+
           <input
             type="text"
             placeholder="Base price"
@@ -143,13 +173,13 @@ const MenuItemForm = ({ formData, handleMenuSubmit, setFormData, handleMenuDelet
 
           <button type="submit">Save</button>
           {
-            id && typeof id === "string" && (
+            (typeof id === "string" && handleMenuDelete) && (
               <button
                 className="mt-2"
-                onClick={() => handleMenuDelete && handleMenuDelete(id)}
+                onClick={() => handleMenuDelete(id)}
                 type="button"
               >
-                Delete
+                Delete this menu item
               </button>
             )
           }
