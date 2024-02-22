@@ -46,7 +46,7 @@ const page = () => {
                 {
                     users.length > 0 ? users.map(user => (
                         <div key={user._id}
-                            className='bg-gray-200 rounded-lg flex items-center justify-between gap-1 p-2 px-4 mb-3'
+                            className='bg-gray-200 border border-gray-300 rounded-lg flex items-center justify-between gap-1 p-2 px-4 mb-3'
                         >
                             <div className="flex flex-col gap-y-2">
                                 <span className='font-medium'>{user.fullname ? user.fullname : "No name"}</span>

@@ -3,6 +3,8 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { redirect, useParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import Loading from "./Loading"
+import useProfile from "@/hooks/useProfile"
 
 const UserForm = () => {
     const { id } = useParams()
@@ -16,7 +18,8 @@ const UserForm = () => {
             adress: "",
             city: "",
             postal: "",
-        }
+        },
+        admin: false
     })
 
     const [saveStatus, setSaveStatus] = useState<null | "saving" | "saved">(null)
@@ -54,6 +57,8 @@ const UserForm = () => {
             if (formData.email === session.data?.user?.email) {
                 session.update()
             }
+        } else {
+            setError('An error occured !')
         }
 
         if (saveStatus !== null) setSaveStatus(null)
@@ -63,14 +68,7 @@ const UserForm = () => {
 
     const getUserData = async () => {
 
-        const res = await fetch('/api/users/edit', {
-            method: 'POST',
-            body: JSON.stringify(id),
-            headers: {
-                "Content-Type": "Application/json"
-            }
-        })
-
+        const res = await fetch(`/api/users/edit?id=${id}`)
         if (res.ok) {
             const data = await res.json()
             setFormData({
@@ -82,7 +80,8 @@ const UserForm = () => {
                     adress: data.location.adress ?? "",
                     city: data.location.city ?? "",
                     postal: data.location.postal ?? ""
-                }
+                },
+                admin: data.admin
 
             })
         } else {
@@ -93,7 +92,6 @@ const UserForm = () => {
     useEffect(() => {
         getUserData()
     }, [])
-
     return (
         <div className="max-w-xl mx-auto">
             {
@@ -188,6 +186,15 @@ const UserForm = () => {
                             name="postal"
                             value={formData.location.postal}
                             onChange={handleChange} />
+                    </div>
+
+                    <div className="flex items-center gap-x-2 mb-4">
+                        <label>Admin</label>
+                        <input
+                            type="checkbox"
+                            checked={formData.admin}
+                            onClick={() => setFormData(prev => ({ ...prev, admin: !prev.admin }))}
+                        />
                     </div>
 
                     <button type="submit">Save</button>

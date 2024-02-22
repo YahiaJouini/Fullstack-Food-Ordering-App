@@ -151,7 +151,7 @@ const CategoryPage = () => {
                 {
                     categories.length > 0 ? categories.map((c, idx) => (
                         <div key={idx}
-                            className='bg-gray-200 rounded-lg flex items-center justify-between gap-1 p-2 px-4 mb-3'
+                            className='bg-gray-200 border border-gray-300 rounded-lg flex items-center justify-between gap-1 p-3 px-4 mb-3'
                         >
                             <span className='font-medium'>{c.name}</span>
                             <div className='flex items-center gap-x-3'>

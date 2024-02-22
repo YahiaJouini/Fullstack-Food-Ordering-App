@@ -62,7 +62,7 @@ const MenuPage = () => {
                                 {menu.map(item => (
                                     <Link
                                         href={`/menu-items/edit/${item._id}`}
-                                        className="button p-4 gap-y-1 mb-3 flex flex-col items-center justify-center text-center"
+                                        className="rounded-xl py-5 px-7 gap-y-2 mb-3 flex flex-col items-center justify-center  text-center bg-gray-300"
                                         key={item._id}
                                     >
                                         <div className="w-[120px] h-[90px] relative rounded-lg">
