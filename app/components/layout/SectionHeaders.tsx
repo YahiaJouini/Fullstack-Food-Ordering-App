@@ -1,4 +1,4 @@
-const SectionHeaders = ({ subHeader, mainHeader }: { subHeader: string, mainHeader: string }) => {
+const SectionHeaders = ({ subHeader, mainHeader }: { subHeader?: string, mainHeader: string }) => {
     return (
         <>
             <h3 className="text-gray-600 uppercase font-semibold leading-5">

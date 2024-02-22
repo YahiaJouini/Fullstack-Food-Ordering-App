@@ -23,7 +23,7 @@ const Item = ({ imagePath, name, description, price }: ItemProps) => {
             </p>
 
             <button className="bg-primary text-white px-5 py-2 rounded-full cursor-pointer">
-                Add to cart {price}$
+                Add to cart ${price}
 
             </button>
         </div>
