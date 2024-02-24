@@ -8,10 +8,7 @@ const ItemDisplay = ({ bestSeller }: { bestSeller: MenuItem[] }) => {
                 bestSeller.map(item => (
                     <Item
                         key={item._id}
-                        imagePath={item.imagePath}
-                        name={item.name}
-                        price={item.price}
-                        description={item.description}
+                        data={item}
                     />
                 ))
             }

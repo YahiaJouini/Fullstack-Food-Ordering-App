@@ -62,12 +62,9 @@ const page = () => {
                         </div>
                         <div className="flex justify-center items-center gap-x-24 flex-wrap  my-14">
                             {menu.filter(m => m.category === cat._id).map(item => (
-                                <div className="w-[500px]">
+                                <div className="w-[500px]" key={item._id}>
                                     <Item
-                                        description={item.description}
-                                        name={item.name}
-                                        price={item.price}
-                                        imagePath={item.imagePath}
+                                        data={item}
                                     />
                                 </div>
 

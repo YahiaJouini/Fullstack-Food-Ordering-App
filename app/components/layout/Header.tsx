@@ -2,21 +2,32 @@
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import Logout from "./Logout"
+import { useCartContext } from "@/hooks/useCartContext";
+import CartData from "./CartData";
 const Header = () => {
+
   const session = useSession()
+  const { cart } = useCartContext()
   const handleNavDisplay = () => {
+
     if (session.status === "loading") {
       return <Logout loading={true} />
-    } else if (session.status === "authenticated") {
+    }
+    else if (session.status === "authenticated") {
+
       const { user } = session.data
       const userName = user?.name || user?.email
+
       return (
         <div className="flex items-center gap-x-6">
           <Link href="/profile">Hello, {userName?.split(" ")[0]}</Link>
           <Logout />
+          <CartData itemsCount={cart.length} />
         </div>
-      );
-    } else {
+      )
+
+    }
+    else {
       return (
         <>
           <Link href={"/login"}>Login</Link>
@@ -27,9 +38,11 @@ const Header = () => {
             Register
           </Link>
         </>
-      );
+      )
     }
-  };
+  }
+
+
   return (
     <header className="flex  items-center justify-between">
       <nav className="flex gap-x-8 text-gray-500 font-bold items-center">
