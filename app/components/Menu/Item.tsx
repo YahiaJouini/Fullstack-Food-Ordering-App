@@ -5,7 +5,7 @@ import { useState } from "react"
 import PopupItem from "../layout/PopupItem"
 
 const Item = ({ data }: { data: MenuItem }) => {
-
+    document.body.style.overflow = 'auto'
     const { addToCart } = useCartContext()
     const [showPopup, setShowPopup] = useState(false)
 
@@ -40,7 +40,14 @@ const Item = ({ data }: { data: MenuItem }) => {
                     className="bg-primary text-white px-5 py-2 rounded-full cursor-pointer"
                     onClick={handleAddToCart}
                 >
-                    Add to cart ${data.price}
+                    {
+                        (data.sizes && data.sizes.length > 0) || (data.ingredients && data.ingredients.length > 0) ? (
+                            `Add to cart (from $${data.price})`
+                        ) : (
+                            `Add to cart $${data.price}`
+                        )
+                    }
+
                 </button>
             </div>
         </>

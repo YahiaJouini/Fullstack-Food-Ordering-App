@@ -1,8 +1,9 @@
+import Link from "next/link"
 import Cart from "../icons/Cart"
 
 const CartData = ({ itemsCount }: { itemsCount: number }) => {
     return (
-        <div>
+        <Link href='/cart'>
             <div className="relative">
                 <Cart />
                 <div
@@ -11,7 +12,7 @@ const CartData = ({ itemsCount }: { itemsCount: number }) => {
                     {itemsCount}
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }
 
