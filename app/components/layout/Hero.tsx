@@ -6,11 +6,11 @@ const Hero = () => {
         <section className="hero mt-12">
             <div className="py-12">
                 <h1 className="text-4xl font-[900] tracking-wide leading-[45px]">
-                    Everything <br /> is better<br /> with a&nbsp;
-                    <span className="text-primary">Pizza</span>
+                    Everything <br /> is better<br /> with&nbsp;
+                    <span className="text-primary">ST EATS</span>
                 </h1>
                 <p className="my-4 text-gray-500 text-sm">
-                    Pizza is the missing piece that makes everyday complete, a simple yet delicious joy in life
+                    Your everyday is incomplete without the missing piece of delightful flavor that only great food can bring.
                 </p>
 
                 <div className="flex items-center gap-x-4 text-sm">

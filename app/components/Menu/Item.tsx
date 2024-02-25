@@ -21,7 +21,7 @@ const Item = ({ data }: { data: MenuItem }) => {
         <>
             {showPopup && <PopupItem setShowPopup={setShowPopup} data={data} />}
             <div className="bg-gray-300 p-4 hover:bg-gray-200 rounded-xl text-center 
-        transition-all duration-500 hover:shadow-md hover:shadow-black/25">
+        transition-all duration-500 hover:shadow-md hover:shadow-black/25 mb-10">
 
                 <div className=" mx-auto h-40 w-52 relative">
                     <Image
@@ -32,7 +32,7 @@ const Item = ({ data }: { data: MenuItem }) => {
                     />
                 </div>
                 <h4 className="font-bold my-3 text-xl">{data.name}</h4>
-                <p className="text-gray-500  mb-3 text-sm">
+                <p className="text-gray-500  mb-3 text-sm  line-clamp-3">
                     {data.description}
                 </p>
 

@@ -2,6 +2,7 @@ import { User } from "@/app/models/User";
 import dbConnect from "@/app/utils/mongo.config";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+
 export async function PUT(req: Request) {
     await dbConnect()
     const { formData } = await req.json()

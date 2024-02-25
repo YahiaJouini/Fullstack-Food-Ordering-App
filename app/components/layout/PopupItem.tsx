@@ -90,10 +90,10 @@ const PopupItem = ({ setShowPopup, data }: propType) => {
 
     return (
         <div className="fixed inset-0 bg-black/80 grid place-content-center z-10">
-            <div className="bg-white p-4 rounded-lg flex flex-col gap-y-8">
+            <div className="bg-white p-4 rounded-lg flex flex-col gap-y-8  w-[550px] mx-auto">
 
-                <div className="relative w-[400px] h-[200px] rounded-xl">
-                    <Image src={data.imagePath} alt='Item image' fill className="object-cover  rounded-xl element-shadow" />
+                <div className="relative w-[400px] h-[200px] rounded-xl mx-auto">
+                    <Image src={data.imagePath} alt='Item image' fill className="object-cover rounded-xl element-shadow" />
                 </div>
 
                 <p className="text-center text-gray-600 font-bold">{data.description}</p>

@@ -47,7 +47,7 @@ const Header = () => {
     <header className="flex  items-center justify-between">
       <nav className="flex gap-x-8 text-gray-500 font-bold items-center">
         <Link className="font-bold text-2xl text-primary mr-10" href="/">
-          ST PIZZA
+          ST EATS
         </Link>
         <Link href={"/"}>Home</Link>
         <Link href={"/menu"}>Menu</Link>
