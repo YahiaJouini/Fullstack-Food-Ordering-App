@@ -27,7 +27,6 @@ const NewMenupage = () => {
 
     const handleMenuSubmit = async ({ e, sizes, ingredients }: submitFormProps) => {
         e.preventDefault()
-        console.log(formData)
         const emptyField = Object.values(formData).some(value => value === "")
         if (emptyField) return
 

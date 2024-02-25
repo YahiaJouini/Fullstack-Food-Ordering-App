@@ -9,12 +9,25 @@ type propType = {
     setShowPopup: React.Dispatch<React.SetStateAction<boolean>>,
     data: MenuItem
 }
+
+export const getFinalPrice = (price: string, size?: ExtraType[], ingredients?: ExtraType[]) => {
+    let selectedPrice = Number(price)
+    if (size && size[0]) selectedPrice += Number(size[0].price)
+    if (ingredients && ingredients.length > 0) {
+        for (let ing of ingredients) {
+            selectedPrice += Number(ing.price)
+        }
+    }
+    return selectedPrice
+}
+
 const PopupItem = ({ setShowPopup, data }: propType) => {
     document.body.style.overflow = 'hidden'
 
     const [size, setSize] = useState<ExtraType[]>([{ name: "", price: "" }])
     const [ingredients, setIngredients] = useState<ExtraType[]>([])
     const { addToCart } = useCartContext()
+    const selectedPrice = getFinalPrice(data.price, size, ingredients)
 
 
     const handleIngredients = (e: React.MouseEvent<HTMLInputElement, MouseEvent>, ing: ExtraType) => {
@@ -25,14 +38,6 @@ const PopupItem = ({ setShowPopup, data }: propType) => {
             setIngredients(prev => {
                 return prev.filter(pr => pr.name !== ing.name)
             })
-        }
-    }
-
-    let selectedPrice = Number(data.price)
-    if (size[0].price) selectedPrice += Number(size[0].price)
-    if (ingredients.length > 0) {
-        for (let ing of ingredients) {
-            selectedPrice += Number(ing.price)
         }
     }
 

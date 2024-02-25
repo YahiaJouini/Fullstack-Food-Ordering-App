@@ -8,7 +8,6 @@ import { ClipLoader } from "react-spinners"
 const HomeMenu = () => {
 
   const [bestSeller, setBestSeller] = useState<MenuItem[]>([])
-  console.log(bestSeller)
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState(true)
   const fetchMenu = async () => {
